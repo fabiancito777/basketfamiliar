@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🏀 Basket Familiar</title>
+  <meta name="theme-color" content="#0F0F0F">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent
+    }
+
+    :root {
+      --orange: #E8622A;
+      --orange-light: #FF8C5A;
+      --orange-dim: #3D1A0A;
+      --dark: #0F0F0F;
+      --dark2: #1A1A1A;
+      --dark3: #242424;
+      --dark4: #2E2E2E;
+      --text: #F0EDE8;
+      --text2: #A09A94;
+      --text3: #6B6560;
+      --green: #2ECC71;
+      --red: #E74C3C;
+      --blue: #3498DB;
+      --gold: #F1C40F;
+      --border: rgba(255, 255, 255, 0.08);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Georgia', serif;
+      overflow-x: hidden
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      padding-bottom: 100px
+    }
+
+    .screen.active {
+      display: flex
+    }
+
+    .hdr {
+      padding: 20px 20px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--dark);
+      z-index: 10
+    }
+
+    .hdr-title {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: .5px
+    }
+
+    .hdr-sub {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 2px
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--dark3);
+      border: none;
+      color: var(--text);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .btn {
+      width: 100%;
+      padding: 18px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all .15s;
+      letter-spacing: .3px;
+      font-family: 'Georgia', serif
+    }
+
+    .btn:active {
+      transform: scale(.97)
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #fff
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-light)
+    }
+
+    .btn-secondary {
+      background: var(--dark3);
+      color: var(--text);
+      border: 1px solid var(--border)
+    }
+
+    .btn-secondary:hover {
+      background: var(--dark4)
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: #fff
+    }
+
+    .btn-warning {
+      background: #e67e22;
+      color: #fff
+    }
+
+    .btn-success {
+      background: var(--green);
+      color: #111;
+      font-weight: bold
+    }
+
+    .btn-sm {
+      padding: 12px 16px;
+      font-size: 14px;
+      width: auto;
+      border-radius: var(--radius-sm)
+    }
+
+    .btn:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .card {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px
+    }
+
+    .card-sm {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px
+    }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background .1s;
+      user-select: none
+    }
+
+    .player-row:hover {
+      background: var(--dark2)
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      flex-shrink: 0
+    }
+
+    .player-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .player-name {
+      font-size: 16px;
+      font-weight: 600
+    }
+
+    .player-meta {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .check-box {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .15s
+    }
+
+    .check-box.checked {
+      background: var(--orange);
+      border-color: var(--orange)
+    }
+
+    .rank {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      display: inline-block
+    }
+
+    .rank-bronze {
+      background: #CD7F3225;
+      color: #CD7F32
+    }
+
+    .rank-silver {
+      background: #C0C0C025;
+      color: #C0C0C0
+    }
+
+    .rank-gold {
+      background: #F1C40F25;
+      color: #F1C40F
+    }
+
+    .rank-platinum {
+      background: #00B9F125;
+      color: #00B9F1
+    }
+
+    .rank-diamond {
+      background: #9B59B625;
+      color: #9B59B6
+    }
+
+    .team-box {
+      flex: 1;
+      background: var(--dark2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      min-height: 220px;
+      transition: border-color .2s
+    }
+
+    .team-box.drag-over {
+      border-color: var(--orange);
+      border-style: dashed
+    }
+
+    .team-label {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text2)
+    }
+
+    .team-stats {
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 10px;
+      line-height: 1.6
+    }
+
+    .team-player-chip {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .15s;
+      user-select: none
+    }
+
+    .team-player-chip:hover {
+      background: var(--dark4)
+    }
+
+    .team-player-chip.dragging {
+      opacity: .3
+    }
+
+    .chip-name {
+      font-size: 14px;
+      font-weight: 600;
+      flex: 1
+    }
+
+    .chip-elo {
+      font-size: 11px;
+      color: var(--text2)
+    }
+
+    .chip-late {
+      font-size: 10px;
+      color: var(--gold);
+      background: #F1C40F20;
+      padding: 2px 6px;
+      border-radius: 10px;
+      flex-shrink: 0
+    }
+
+    .prob-bar {
+      height: 10px;
+      border-radius: 5px;
+      background: var(--dark4);
+      display: flex;
+      overflow: hidden;
+      margin: 8px 0
+    }
+
+    .prob-a {
+      background: var(--orange);
+      transition: width .4s ease
+    }
+
+    .prob-b {
+      background: var(--blue);
+      transition: width .4s ease
+    }
+
+    .prob-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text2)
+    }
+
+    .score-input {
+      width: 100%;
+      text-align: center;
+      font-size: 72px;
+      font-weight: bold;
+      background: var(--dark3);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 16px 0;
+      -moz-appearance: textfield;
+      font-family: 'Georgia', serif
+    }
+
+    .score-input::-webkit-outer-spin-button,
+    .score-input::-webkit-inner-spin-button {
+      -webkit-appearance: none
+    }
+
+    .score-input:focus {
+      border-color: var(--orange);
+      outline: none
+    }
+
+    .elo-result-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .delta-pos {
+      color: var(--green)
+    }
+
+    .delta-neg {
+      color: var(--red)
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .78);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 200
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 24px 20px 40px;
+      width: 100%;
+      max-width: 430px;
+      max-height: 88vh;
+      overflow-y: auto
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px
+    }
+
+    /* Confirm dialogs — centered, not bottom sheet */
+    .confirm-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .88);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 400;
+      padding: 20px
+    }
+
+    .confirm-overlay.open {
+      display: flex
+    }
+
+    .confirm-box {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      width: 100%;
+      max-width: 380px
+    }
+
+    .confirm-emoji {
+      font-size: 40px;
+      margin-bottom: 14px;
+      display: block;
+      text-align: center
+    }
+
+    .confirm-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center
+    }
+
+    .confirm-body {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.65;
+      margin-bottom: 20px
+    }
+
+    .confirm-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    /* Court toggle */
+    .court-toggle {
+      display: flex;
+      gap: 10px;
+      padding: 0 20px;
+      margin: 12px 0
+    }
+
+    .court-btn {
+      flex: 1;
+      padding: 16px 8px;
+      border-radius: var(--radius);
+      border: 2px solid var(--border);
+      background: var(--dark2);
+      color: var(--text2);
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      transition: all .15s;
+      font-family: 'Georgia', serif
+    }
+
+    .court-btn.active {
+      border-color: var(--orange);
+      color: var(--text);
+      background: var(--orange-dim)
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 16px
+    }
+
+    .form-label {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 8px;
+      display: block
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 16px;
+      font-family: 'Georgia', serif
+    }
+
+    .form-input:focus {
+      border-color: var(--orange);
+      outline: none
+    }
+
+    .form-input.inp-danger:focus {
+      border-color: var(--red)
+    }
+
+    .archetypes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px
+    }
+
+    .arch-chip {
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--dark3);
+      color: var(--text2);
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      transition: all .15s;
+      user-select: none
+    }
+
+    .arch-chip.selected {
+      border-color: var(--orange);
+      color: var(--text);
+      background: var(--orange-dim)
+    }
+
+    /* Late modal */
+    .late-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all .15s;
+      background: var(--dark3)
+    }
+
+    .late-row:hover {
+      border-color: var(--orange)
+    }
+
+    .late-row.selected {
+      border-color: var(--orange);
+      background: var(--orange-dim)
+    }
+
+    .suggestion {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .suggestion:active {
+      transform: scale(.98)
+    }
+
+    .suggestion.ideal {
+      border-color: var(--green)
+    }
+
+    .suggestion.trade {
+      border-color: var(--blue)
+    }
+
+    .suggestion-icon {
+      font-size: 22px;
+      margin-bottom: 6px
+    }
+
+    .suggestion-title {
+      font-size: 14px;
+      font-weight: bold
+    }
+
+    .suggestion-sub {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 4px;
+      line-height: 1.5
+    }
+
+    /* FAB */
+    .fab {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 398px;
+      padding: 16px 0 24px;
+      z-index: 50;
+      background: linear-gradient(transparent, var(--dark) 40%)
+    }
+
+    /* Misc */
+    .sep {
+      padding: 14px 20px 6px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      color: var(--text3);
+      text-transform: uppercase
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: bold;
+      padding: 20px 20px 8px
+    }
+
+    .section-sub {
+      font-size: 14px;
+      color: var(--text2);
+      padding: 0 20px 16px
+    }
+
+    .steps {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px 4px;
+      gap: 4px
+    }
+
+    .step {
+      flex: 1;
+      height: 3px;
+      background: var(--dark4);
+      border-radius: 2px;
+      transition: background .3s
+    }
+
+    .step.done {
+      background: var(--orange)
+    }
+
+    .step.active {
+      background: var(--orange-light)
+    }
+
+    .overtime-badge {
+      color: var(--gold);
+      font-size: 15px;
+      text-align: center;
+      margin-top: 6px;
+      min-height: 24px;
+      font-weight: bold
+    }
+
+    .s3-player-item {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .s3-player-item:last-child {
+      border-bottom: none
+    }
+
+    .timer-display {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--orange);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 1px
+    }
+
+    .god-banner {
+      background: var(--orange-dim);
+      border: 1px solid var(--orange);
+      border-radius: var(--radius-sm);
+      margin: 12px 20px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--orange);
+      display: none
+    }
+
+    /* Historial */
+    .hdr-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px
+    }
+
+    .hdr-tab {
+      flex: 1;
+      padding: 10px 4px;
+      font-size: 13px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      color: var(--text2);
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+      user-select: none
+    }
+
+    .hdr-tab.active {
+      color: var(--orange);
+      border-bottom-color: var(--orange)
+    }
+
+    .match-card {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden
+    }
+
+    .match-card-hdr {
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      gap: 10px
+    }
+
+    .match-card-hdr:hover {
+      background: var(--dark4)
+    }
+
+    .match-score {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px
+    }
+
+    .match-meta {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 3px
+    }
+
+    .match-winner-badge {
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #2ECC7120;
+      color: var(--green);
+      white-space: nowrap
+    }
+
+    .match-body {
+      padding: 0 16px 14px;
+      display: none;
+      border-top: 1px solid var(--border)
+    }
+
+    .match-body.open {
+      display: block
+    }
+
+    .match-player-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      gap: 8px
+    }
+
+    .match-player-line:last-child {
+      border-bottom: none
+    }
+
+    /* Roster action buttons strip */
+    .roster-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap
+    }
+
+    .action-pill {
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--dark4);
+      color: var(--text2);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'Georgia', serif;
+      white-space: nowrap
+    }
+
+    .action-pill:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, .25)
+    }
+
+    .action-pill.a-warn:hover {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
+    .action-pill.a-danger:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    .action-pill.a-green:hover {
+      border-color: var(--green);
+      color: var(--green)
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- S1: ASISTENCIA -->
+  <div class="screen active" id="s1">
+    <div class="hdr">
+      <div style="flex:1">
+        <div class="hdr-title">🏀 Basket Familiar</div>
+        <div class="hdr-sub" id="s1-date"></div>
+      </div>
+      <button class="icon-btn" onclick="openHistorial()" title="Historial de partidos">📋</button>
+      <button class="icon-btn" onclick="openRosterManager()" title="Gestionar Roster">⚙️</button>
+    </div>
+    <div class="steps">
+      <div class="step active"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+    </div>
+    <div class="section-title">¿Quién juega hoy?</div>
+    <div class="section-sub" id="s1-count">0 jugadores seleccionados</div>
+    <div class="sep">Tipo de cancha</div>
+    <div class="court-toggle">
+      <button class="court-btn" id="btn-half" onclick="setCourt('half')">🏀 Media Cancha</button>
+      <button class="court-btn active" id="btn-full" onclick="setCourt('full')">🏟️ Cancha Completa</button>
+    </div>
+    <div class="sep">Roster</div>
+    <div id="s1-roster"></div>
+    <div style="height:120px"></div>
+    <div class="fab"><button class="btn btn-primary" id="btn-generar" onclick="generateTeams()">Selecciona al menos 2
+        jugadores</button></div>
+  </div>
+
+  <!-- S2: DRAFT -->
+  <div class="screen" id="s2">
+    <div class="hdr">
+      <button class="back-btn" onclick="goTo('s1')">←</button>
+      <div style="flex:1;margin-left:8px">
+        <div class="hdr-title">Draft de Equipos</div>
+        <div class="hdr-sub">Balance táctico de ELO y Altura</div>
+      </div>
+      <button class="action-pill" onclick="generateTeams()">🎲 Re-balancear</button>
+    </div>
+    <div class="steps">
+      <div class="step done"></div>
+      <div class="step active"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+    </div>
+    <div id="bias-alert" style="display:none;margin:8px 16px 0;background:#F1C40F18;border:1px solid var(--gold);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--gold);line-height:1.5"></div>
+    <div style="padding:14px 20px 0">
+      <div class="prob-labels"><span id="prob-label-a">⬜ Blanco — 50%</span><span id="prob-label-b">50% — 🟫
+          Oscuro</span></div>
+      <div class="prob-bar">
+        <div class="prob-a" id="bar-a" style="width:50%"></div>
+        <div class="prob-b" id="bar-b" style="width:50%"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;padding:10px 12px">
+      <div class="team-box" id="team-a-box" ondrop="drop(event,'a')" ondragover="allowDrop(event)"
+        ondragleave="removeDragOver(event)" onclick="handleBoxTap('a')">
+        <div class="team-label">⬜ Blanco</div>
+        <div class="team-stats" id="stats-a">—</div>
+        <div id="team-a-chips"></div>
+      </div>
+      <div class="team-box" id="team-b-box" ondrop="drop(event,'b')" ondragover="allowDrop(event)"
+        ondragleave="removeDragOver(event)" onclick="handleBoxTap('b')">
+        <div class="team-label">🟫 Oscuro</div>
+        <div class="team-stats" id="stats-b">—</div>
+        <div id="team-b-chips"></div>
+      </div>
+    </div>
+    <div style="height:100px"></div>
+    <div class="fab"><button class="btn btn-success" onclick="startMatch()">⚡ Comenzar Partido</button></div>
+  </div>
+
+  <!-- S3: PARTIDO -->
+  <div class="screen" id="s3">
+    <div class="hdr">
+      <div style="flex:1">
+        <div class="hdr-title">Partido en Curso 🔥</div>
+        <div class="hdr-sub" id="s3-court-label"></div>
+      </div>
+      <div class="timer-display" id="timer-display">00:00</div>
+    </div>
+    <div class="steps">
+      <div class="step done"></div>
+      <div class="step done"></div>
+      <div class="step active"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+    </div>
+    <div style="display:flex;gap:12px;padding:16px 16px 8px">
+      <div class="card" style="flex:1">
+        <div class="team-label" style="margin-bottom:10px">⬜ Blanco</div>
+        <div id="s3-team-a"></div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="team-label" style="margin-bottom:10px">🟫 Oscuro</div>
+        <div id="s3-team-b"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;padding:8px 16px">
+      <button class="btn btn-secondary btn-sm" style="flex:1;padding:14px" onclick="openLateModal()">+ Jugador Tarde</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1;padding:14px" id="timer-btn" onclick="toggleTimer()">▶ Timer</button>
+      <button class="btn btn-secondary btn-sm" style="padding:14px 16px" onclick="openConfirm('confirm-cancel')" title="Cancelar partido">✕</button>
+    </div>
+    <div style="height:100px"></div>
+    <div class="fab"><button class="btn btn-danger" onclick="endMatch()">🏁 Finalizar Partido</button></div>
+  </div>
+
+  <!-- S4: MARCADOR -->
+  <div class="screen" id="s4">
+    <div class="hdr">
+      <div>
+        <div class="hdr-title">Marcador Final</div>
+        <div class="hdr-sub">¿Cómo terminó el partido?</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step done"></div>
+      <div class="step done"></div>
+      <div class="step done"></div>
+      <div class="step active"></div>
+      <div class="step"></div>
+    </div>
+    <div style="display:flex;gap:16px;padding:28px 20px 0;align-items:flex-start">
+      <div style="flex:1;text-align:center">
+        <div
+          style="font-size:12px;color:var(--text2);margin-bottom:10px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+          ⬜ Blanco</div>
+        <input class="score-input" type="number" id="score-a" min="0" value="0" oninput="checkOvertime()"
+          inputmode="numeric">
+      </div>
+      <div style="padding-top:58px;font-size:36px;color:var(--text3);font-weight:bold">—</div>
+      <div style="flex:1;text-align:center">
+        <div
+          style="font-size:12px;color:var(--text2);margin-bottom:10px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+          🟫 Oscuro</div>
+        <input class="score-input" type="number" id="score-b" min="0" value="0" oninput="checkOvertime()"
+          inputmode="numeric">
+      </div>
+    </div>
+    <div class="overtime-badge" id="overtime-msg"></div>
+    <div style="padding:8px 20px;font-size:13px;color:var(--red);text-align:center;min-height:24px" id="score-error">
+    </div>
+    <div style="padding:12px 20px">
+    <div style="padding:0 20px 4px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:14px;color:var(--text2)">⚡ Jugar con deuce (10-10)</span>
+      <label style="position:relative;width:44px;height:24px;cursor:pointer">
+        <input type="checkbox" id="deuce-toggle" checked style="opacity:0;width:0;height:0" onchange="toggleDeuce()">
+        <span id="deuce-slider" style="position:absolute;inset:0;background:var(--orange);border-radius:12px;display:flex;align-items:center;padding:2px 4px;transition:.2s"><span id="deuce-thumb" style="width:20px;height:20px;background:#fff;border-radius:50%;margin-left:auto;display:block;transition:.2s"></span></span>
+      </label>
+    </div>
+    <div class="card-sm" id="deuce-rule-card" style="margin-top:4px;text-align:center;color:var(--text2);line-height:1.6;font-size:12px">
+      <b style="color:var(--text)">Regla:</b> Ganador a 11. Desde 10-10 se juega deuce: ganar con +2 (12-10, 13-11...).
+    </div>
+    </div>
+    <div style="padding:0 20px"><button class="btn btn-primary" onclick="calculateELO()">🧮 Calcular ELO y
+        Guardar</button></div>
+  </div>
+
+  <!-- S5: RESUMEN -->
+  <div class="screen" id="s5">
+    <div class="hdr">
+      <div style="flex:1">
+        <div class="hdr-title">Resumen del Partido</div>
+        <div class="hdr-sub" id="s5-result"></div>
+      </div>
+      <button class="icon-btn" id="god-mode-btn" onclick="toggleGodMode()" title="God Mode">⚙️</button>
+    </div>
+    <div class="steps">
+      <div class="step done"></div>
+      <div class="step done"></div>
+      <div class="step done"></div>
+      <div class="step done"></div>
+      <div class="step active"></div>
+    </div>
+    <div class="god-banner" id="god-banner">👁️ GOD MODE — Viendo valores exactos de ELO</div>
+    <div class="sep">Ganadores 🏆</div>
+    <div id="s5-winners"></div>
+    <div class="sep">Derrotados 💔</div>
+    <div id="s5-losers"></div>
+    <div style="padding:20px"><button class="btn btn-primary" onclick="newGame()">🏀 Nuevo Partido</button></div>
+  </div>
+
+  <!-- MODAL: HISTORIAL -->
+  <div class="modal-overlay" id="modal-historial" onclick="closeOnOverlay(event,'modal-historial')">
+    <div class="modal" style="padding-bottom:32px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="modal-title" style="margin:0">📋 Historial</div>
+        <button class="back-btn" onclick="closeModal('modal-historial')">✕</button>
+      </div>
+      <div class="hdr-tabs">
+        <div class="hdr-tab active" id="htab-all" onclick="switchHistTab('all')">Todos</div>
+        <div class="hdr-tab" id="htab-player" onclick="switchHistTab('player')">Por jugador</div>
+        <div class="hdr-tab" id="htab-h2h" onclick="switchHistTab('h2h')">H2H</div>
+      </div>
+      <div id="hist-player-filter" style="display:none;margin-bottom:14px">
+        <select class="form-input" id="hist-player-select" onchange="renderHistorial()" style="padding:12px 16px">
+          <option value="">— Elige un jugador —</option>
+        </select>
+      </div>
+      <div id="hist-h2h-filter" style="display:none;margin-bottom:14px">
+        <select class="form-input" id="h2h-player-a" onchange="renderHistorial()" style="padding:12px 16px;margin-bottom:8px">
+          <option value="">— Jugador A —</option>
+        </select>
+        <select class="form-input" id="h2h-player-b" onchange="renderHistorial()" style="padding:12px 16px">
+          <option value="">— Jugador B —</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;display:flex;gap:8px">
+        <button class="action-pill" id="hf-all" onclick="setHistFilter('all')" style="flex:1">Todas</button>
+        <button class="action-pill" id="hf-half" onclick="setHistFilter('half')" style="flex:1">Media</button>
+        <button class="action-pill" id="hf-full" onclick="setHistFilter('full')" style="flex:1">Completa</button>
+      </div>
+      <div id="historial-content">
+        <div style="color:var(--text2);font-size:14px;text-align:center;padding:40px 0">No hay partidos registrados aún.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ROSTER MANAGER -->
+  <div class="modal-overlay" id="modal-roster" onclick="closeOnOverlay(event,'modal-roster')">
+    <div class="modal">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div class="modal-title" style="margin:0">⚙️ Gestión de Roster</div>
+        <button class="back-btn" onclick="closeModal('modal-roster')">✕</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <button class="btn btn-primary" onclick="openAddPlayer()">+ Añadir Jugador</button>
+        <button class="btn btn-secondary" style="width:auto;padding:18px 16px;white-space:nowrap" onclick="exportBackup()" title="Descargar copia de seguridad">📤 Backup</button>
+      </div>
+      <div id="roster-list"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD/EDIT PLAYER -->
+  <div class="modal-overlay" id="modal-player" onclick="closeOnOverlay(event,'modal-player')">
+    <div class="modal">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div class="modal-title" id="modal-player-title" style="margin:0">Nuevo Jugador</div>
+        <button class="back-btn" onclick="closeModal('modal-player')">✕</button>
+      </div>
+      <div class="form-group"><label class="form-label">Nombre *</label><input class="form-input" id="p-name"
+          placeholder="Ej. Carlos" type="text"></div>
+      <div class="form-group"><label class="form-label">Altura en cm *</label><input class="form-input" id="p-height"
+          placeholder="Ej. 180" type="number" min="140" max="230" inputmode="numeric"></div>
+      <div class="form-group"><label class="form-label">Stamina (1-10)</label><input class="form-input" id="p-stamina"
+          placeholder="Ej. 7.5" type="number" min="1" max="10" step="0.01" inputmode="decimal"></div>
+      <div class="form-group"><label class="form-label">Arquetipos</label>
+        <div class="archetypes-grid" id="arch-grid"></div>
+      </div>
+      <input type="hidden" id="p-edit-id">
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-secondary" style="width:auto;padding:18px 24px"
+          onclick="closeModal('modal-player')">Cancelar</button>
+        <button class="btn btn-primary" onclick="savePlayer()">Guardar Jugador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: JUGADOR TARDE -->
+  <div class="modal-overlay" id="modal-late" onclick="closeOnOverlay(event,'modal-late')">
+    <div class="modal">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="modal-title" style="margin:0">+ Jugador Tarde</div>
+        <button class="back-btn" onclick="closeModal('modal-late')">✕</button>
+      </div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Toca al jugador que acaba de llegar</div>
+      <div id="late-player-list"></div>
+      <div id="late-suggestions" style="display:none">
+        <div style="height:1px;background:var(--border);margin:16px 0"></div>
+        <div
+          style="font-size:11px;font-weight:bold;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-bottom:10px">
+          Sugerencias Inteligentes</div>
+        <div id="suggestions-content"></div>
+        <div style="height:1px;background:var(--border);margin:16px 0"></div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px">O asigna manualmente:</div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="forceLate('a')">→ ⬜ Blanco</button>
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="forceLate('b')">→ 🟫 Oscuro</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM: ELIMINAR JUGADOR -->
+  <div class="confirm-overlay" id="confirm-delete">
+    <div class="confirm-box">
+      <span class="confirm-emoji">🗑️</span>
+      <div class="confirm-title">Eliminar jugador</div>
+      <div class="confirm-body" id="cdel-body">Escribe el nombre del jugador para confirmar.</div>
+      <div class="form-group">
+        <label class="form-label" id="cdel-label">Escribe el nombre exactamente:</label>
+        <input class="form-input inp-danger" id="cdel-input" type="text" oninput="checkDeleteConfirm()"
+          autocomplete="off" autocorrect="off" spellcheck="false">
+        <div style="font-size:12px;min-height:18px;margin-top:6px" id="cdel-hint"></div>
+      </div>
+      <div class="confirm-actions">
+        <button class="btn btn-danger" id="cdel-btn" onclick="executeDeletePlayer()" disabled>Sí, eliminar
+          definitivamente</button>
+        <button class="btn btn-secondary" onclick="closeConfirm('confirm-delete')">Cancelar — mantener jugador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM: RESET ELO -->
+  <!-- CONFIRM: RESET ELO -->
+  <div class="confirm-overlay" id="confirm-reset">
+    <div class="confirm-box">
+      <span class="confirm-emoji">⚠️</span>
+      <div class="confirm-title">Resetear ELO</div>
+      <div class="confirm-body" id="creset-body">El ELO volverá a 1200. No se puede deshacer.</div>
+      <div class="form-group">
+        <label class="form-label">Escribe <b style="color:var(--gold)">RESET</b> en mayúsculas para confirmar:</label>
+        <input class="form-input inp-danger" id="creset-input" type="text" oninput="checkResetConfirm()"
+          autocomplete="off" autocorrect="off" spellcheck="false" placeholder="RESET">
+        <div style="font-size:12px;min-height:18px;margin-top:6px" id="creset-hint"></div>
+      </div>
+      <div class="confirm-actions">
+        <button class="btn btn-warning" id="creset-btn" onclick="executeResetELO()" disabled>Sí, resetear a
+          1200</button>
+        <button class="btn btn-secondary" onclick="cancelResetELO()">Cancelar — conservar ELO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM: CANCELAR PARTIDO -->
+  <div class="confirm-overlay" id="confirm-cancel">
+    <div class="confirm-box">
+      <span class="confirm-emoji">🚫</span>
+      <div class="confirm-title">Cancelar partido</div>
+      <div class="confirm-body">El partido se descartará y nadie ganará ni perderá ELO. ¿Seguro?</div>
+      <div class="confirm-actions">
+        <button class="btn btn-danger" onclick="cancelMatch()">Sí, cancelar partido</button>
+        <button class="btn btn-secondary" onclick="closeConfirm('confirm-cancel')">No, seguir jugando</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== CONSTANTES =====
+    const ARCHETYPES = ['Tirador', 'Defensa', 'Armador', 'Pivot', 'Alero', 'Base'];
+    const HEIGHT_WEIGHT = 0.05, K_BASE = 32;
+    const AV_COLORS = ['#E8622A', '#3498DB', '#2ECC71', '#9B59B6', '#E74C3C', '#F39C12', '#1ABC9C', '#E91E63', '#00BCD4', '#FF5722'];
+
+    // ===== ESTADO =====
+    let S = {
+      players: [], matchHistory: [],
+      present: [], courtSize: 'full',
+      teamA: [], teamB: [],
+      matchResults: [], godMode: false,
+      timerRunning: false, timerSeconds: 0, timerInterval: null,
+      selectedLatePlayer: null,
+      pendingDeleteId: null, pendingResetId: null,
+      histTab: 'all', histCourtFilter: 'all',
+      currentScreen: 's1', selectedChipId: null,
+      deuceEnabled: true
+    };
+
+    // ===== PERSISTENCIA =====
+    function loadData() {
+      try {
+        const p = localStorage.getItem('bk_players_v2');
+        if (p) S.players = JSON.parse(p); else seed();
+        const h = localStorage.getItem('bk_history_v1');
+        if (h) S.matchHistory = JSON.parse(h);
+        const st = localStorage.getItem('bk_state_v1');
+        if (st) {
+          const s = JSON.parse(st);
+          S.present = s.present || [];
+          S.courtSize = s.courtSize || 'full';
+          S.teamA = s.teamA || [];
+          S.teamB = s.teamB || [];
+          S.deuceEnabled = s.deuceEnabled !== undefined ? s.deuceEnabled : true;
+          if (s.currentScreen && s.currentScreen !== 's1') setTimeout(() => goTo(s.currentScreen), 100);
+          setCourt(S.courtSize);
+        }
+      } catch (e) { seed(); }
+    }
+    function saveAppState() {
+      localStorage.setItem('bk_state_v1', JSON.stringify({
+        present: S.present, courtSize: S.courtSize, teamA: S.teamA, teamB: S.teamB, 
+        currentScreen: S.currentScreen, deuceEnabled: S.deuceEnabled
+      }));
+    }
+    function seed() {
+      S.players = [
+        { id: uid(), name: 'Rober',       height_cm: 167, elo_score: 1200, stamina_score: 8.83, archetypes: [], is_active: true },
+        { id: uid(), name: 'Luchito',     height_cm: 174, elo_score: 1200, stamina_score: 8.35, archetypes: [], is_active: true },
+        { id: uid(), name: 'Santi',       height_cm: 183, elo_score: 1200, stamina_score: 8.22, archetypes: [], is_active: true },
+        { id: uid(), name: 'Fabián',      height_cm: 184, elo_score: 1200, stamina_score: 7.78, archetypes: [], is_active: true },
+        { id: uid(), name: 'Sebitas',     height_cm: 187, elo_score: 1200, stamina_score: 6.78, archetypes: [], is_active: true },
+        { id: uid(), name: 'Nellvis',     height_cm: 180, elo_score: 1200, stamina_score: 6.56, archetypes: [], is_active: true },
+        { id: uid(), name: 'Omaira',      height_cm: 170, elo_score: 1200, stamina_score: 6.33, archetypes: [], is_active: true },
+        { id: uid(), name: 'Andrea',      height_cm: 173, elo_score: 1200, stamina_score: 6.33, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tian',        height_cm: 173, elo_score: 1200, stamina_score: 6.11, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tío Horacio', height_cm: 175, elo_score: 1200, stamina_score: 5.65, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tía Zuleima', height_cm: 165, elo_score: 1200, stamina_score: 5.55, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tío Lucho',   height_cm: 174, elo_score: 1200, stamina_score: 4.95, archetypes: [], is_active: true },
+        { id: uid(), name: 'Vale',        height_cm: 172, elo_score: 1200, stamina_score: 4.72, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tía Aracely', height_cm: 169, elo_score: 1200, stamina_score: 4.60, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tío Viter',   height_cm: 190, elo_score: 1200, stamina_score: 4.20, archetypes: [], is_active: true },
+      ];
+      savePlayers();
+    }
+    function savePlayers() { localStorage.setItem('bk_players_v2', JSON.stringify(S.players)); }
+    function saveHistory() { localStorage.setItem('bk_history_v1', JSON.stringify(S.matchHistory)); }
+    function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+
+    // ===== HELPERS =====
+    function getPlayer(id) { return S.players.find(p => p.id === id); }
+    function teamElo(team) { return team.reduce((s, e) => s + (getPlayer(e.player_id)?.elo_score || 0), 0); }
+    // Agrega esta función debajo de teamElo(...)
+    function teamAvgElo(team) {
+      if (!team || team.length === 0) return 1200;
+      return teamElo(team) / team.length;
+    }
+    // Calcula la probabilidad real tomando en cuenta ventajas numéricas y stamina
+    function getEffectiveMatchup(teamA, teamB) {
+      const avgA = teamAvgElo(teamA);
+      const avgB = teamAvgElo(teamB);
+      const sizeA = teamA.length;
+      const sizeB = teamB.length;
+      const maxSize = Math.max(sizeA, sizeB);
+
+      let effA = avgA;
+      let effB = avgB;
+
+      if (sizeA < maxSize) {
+        const missingPlayers = maxSize - sizeA;
+        const avgStaminaA = teamA.reduce((s, e) => s + (getPlayer(e.player_id)?.stamina_score || 7), 0) / sizeA;
+        const penalty = missingPlayers * (250 - (avgStaminaA * 8));
+        effA -= penalty;
+      }
+      if (sizeB < maxSize) {
+        const missingPlayers = maxSize - sizeB;
+        const avgStaminaB = teamB.reduce((s, e) => s + (getPlayer(e.player_id)?.stamina_score || 7), 0) / sizeB;
+        const penalty = missingPlayers * (250 - (avgStaminaB * 8));
+        effB -= penalty;
+      }
+
+      return { effA, effB, probA: calcPA(effA, effB) };
+    }
+    function teamAvgH(team) { const h = team.map(e => getPlayer(e.player_id)?.height_cm || 175); return h.length ? h.reduce((a, b) => a + b, 0) / h.length : 175; }
+    function calcPA(eA, eB) { return 1 / (1 + Math.pow(10, (eB - eA) / 400)); }
+    function getRank(elo) {
+      if (elo < 1000) return { name: 'Bronce', cls: 'rank-bronze' };
+      if (elo <= 1199) return { name: 'Plata', cls: 'rank-silver' };
+      if (elo <= 1399) return { name: 'Oro', cls: 'rank-gold' };
+      if (elo <= 1599) return { name: 'Platino', cls: 'rank-platinum' };
+      return { name: 'Diamante 💎', cls: 'rank-diamond' };
+    }
+    function chkSVG() { return '<svg width="14" height="14" viewBox="0 0 14 14"><polyline points="2,7 5,11 12,3" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+
+    // ===== NAVEGACIÓN =====
+    function goTo(id) {
+      S.currentScreen = id;
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+      if (id === 's1') renderS1();
+      if (id === 's2') renderS2();
+      if (id === 's3') renderS3();
+      if (id === 's4') toggleDeuce(S.deuceEnabled);
+      saveAppState();
+    }
+    function getWinLoss(playerId) {
+      const all = S.matchHistory.flatMap(m => m.playerDeltas.filter(d => d.playerId === playerId));
+      const wins = all.filter(d => d.won).length;
+      const losses = all.length - wins;
+      return `<span style="color:var(--green)">${wins}V</span> - <span style="color:var(--red)">${losses}D</span>`;
+    }
+    function getStreak(playerId) {
+      const matches = S.matchHistory.filter(m => m.playerDeltas.some(d => d.playerId === playerId));
+      if (matches.length < 2) return null;
+      const first = matches[0].playerDeltas.find(d => d.playerId === playerId);
+      const isWin = first.won;
+      let streak = 0;
+      for (const m of matches) {
+        const d = m.playerDeltas.find(x => x.playerId === playerId);
+        if (!d || d.won !== isWin) break;
+        streak++;
+      }
+      return streak >= 2 ? { isWin, streak } : null;
+    }
+
+    // ===== S1: ASISTENCIA =====
+    function renderS1() {
+      const now = new Date();
+      document.getElementById('s1-date').textContent = now.toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' });
+      const active = S.players.filter(p => p.is_active).sort((a, b) => b.elo_score - a.elo_score);
+      const count = S.present.length;
+      document.getElementById('s1-count').textContent = `${count} de ${active.length} jugadores seleccionados`;
+      const btn = document.getElementById('btn-generar');
+      btn.disabled = count < 2;
+      btn.textContent = count >= 2 ? `Generar Equipos con ${count} jugadores →` : 'Selecciona al menos 2 jugadores';
+      const c = document.getElementById('s1-roster');
+      if (!active.length) { c.innerHTML = '<div style="padding:40px 20px;text-align:center;color:var(--text2)">No hay jugadores activos.<br>Añade uno con ⚙️</div>'; return; }
+      c.innerHTML = active.map(p => {
+        const chk = S.present.includes(p.id);
+        const r = getRank(p.elo_score);
+        const ini = p.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        const col = AV_COLORS[p.name.charCodeAt(0) % AV_COLORS.length];
+        const isRookie = getMatchesPlayed(p.id) < 10;
+        const wl = getWinLoss(p.id);
+        const streak = getStreak(p.id);
+        const streakBadge = streak ? ` · ${streak.isWin ? '🔥' : '🧊'}${streak.streak}` : '';
+        return `<div class="player-row" onclick="togglePresent('${p.id}')">
+      <div class="avatar" style="background:${col}22;color:${col}">${ini}</div>
+      <div class="player-info">
+        <div class="player-name">${p.name}${isRookie ? ' 🔰' : ''}</div>
+        <div class="player-meta">${p.height_cm}cm · ${p.archetypes.slice(0, 2).join(', ') || 'Sin arquetipo'} · <span class="rank ${r.cls}">${r.name}</span> (${Math.round(p.elo_score)}) · ${wl}${streakBadge}</div>
+      </div>
+      <div class="check-box ${chk ? 'checked' : ''}">${chk ? chkSVG() : ''}</div>
+    </div>`;
+      }).join('');
+    }
+    function togglePresent(id) {
+      if (S.present.includes(id)) S.present = S.present.filter(x => x !== id); else S.present.push(id);
+      saveAppState();
+      renderS1();
+    }
+    function setCourt(t) {
+      S.courtSize = t;
+      document.getElementById('btn-half').classList.toggle('active', t === 'half');
+      document.getElementById('btn-full').classList.toggle('active', t === 'full');
+    }
+
+    // ===== GENERAR EQUIPOS =====
+    function generateTeams() {
+      if (S.present.length < 2) return;
+      const players = S.present.map(id => S.players.find(p => p.id === id)).filter(Boolean);
+
+      function getCombinations(arr, k) {
+        let results = [];
+        function helper(start, combo) {
+          if (combo.length === k) { results.push([...combo]); return; }
+          for (let i = start; i < arr.length; i++) { combo.push(arr[i]); helper(i + 1, combo); combo.pop(); }
+        }
+        helper(0, []); return results;
+      }
+
+      const half = Math.floor(players.length / 2);
+      const combos = getCombinations(players, half);
+      const currentAIds = new Set(S.teamA.map(e => e.player_id));
+      const isSameSplit = (tA) => tA.length === currentAIds.size && tA.every(p => currentAIds.has(p.id));
+
+      // Puntuar todos los splits
+      const scored = combos.map(tA_players => {
+        const tB_players = players.filter(p => !tA_players.includes(p));
+        const avgEloA = tA_players.reduce((s, p) => s + p.elo_score, 0) / tA_players.length;
+        const avgEloB = tB_players.reduce((s, p) => s + p.elo_score, 0) / tB_players.length;
+        const avgHeightA = tA_players.reduce((s, p) => s + p.height_cm, 0) / tA_players.length || 175;
+        const avgHeightB = tB_players.reduce((s, p) => s + p.height_cm, 0) / tB_players.length || 175;
+        const diffElo = Math.abs(avgEloA - avgEloB);
+        const diffHeightVal = avgHeightA - avgHeightB;
+        let cost = diffElo;
+        if (tA_players.length === tB_players.length) { cost += Math.abs(diffHeightVal) * 15; }
+        else if (tA_players.length < tB_players.length) { cost -= diffHeightVal * 10; }
+        else { cost += diffHeightVal * 10; }
+        return { tA: tA_players, tB: tB_players, cost, same: isSameSplit(tA_players) || isSameSplit(tB_players) };
+      });
+
+      scored.sort((a, b) => a.cost - b.cost);
+      const bestCost = scored[0].cost;
+
+      // Margen generoso para cuando todos tienen ELO igual (solo compiten por altura)
+      const margin = Math.max(bestCost * 0.15, 40);
+      const goodSplits = scored.filter(s => s.cost <= bestCost + margin);
+
+      // Al re-balancear, elegir aleatoriamente entre splits DIFERENTES al actual
+      const isRebalance = currentAIds.size > 0;
+      const differentSplits = goodSplits.filter(s => !s.same);
+      const pool = (isRebalance && differentSplits.length > 0) ? differentSplits : goodSplits;
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+
+      S.teamA = chosen.tA.map(p => ({ player_id: p.id, is_late_arrival: false }));
+      S.teamB = chosen.tB.map(p => ({ player_id: p.id, is_late_arrival: false }));
+      saveAppState();
+      checkTeamBias();
+      goTo('s2');
+    }
+
+    function checkTeamBias() {
+      const alertEl = document.getElementById('bias-alert');
+      if (!alertEl) return;
+      if (S.matchHistory.length < 3) { alertEl.style.display = 'none'; return; }
+
+      // Mapa de equipo actual para cada jugador
+      const currentTeam = {};
+      S.teamA.forEach(e => { currentTeam[e.player_id] = 'a'; });
+      S.teamB.forEach(e => { currentTeam[e.player_id] = 'b'; });
+
+      const warnings = [];
+      const recentMatches = S.matchHistory.slice(0, 8);
+
+      S.present.forEach(pidA => {
+        S.present.forEach(pidB => {
+          if (pidA >= pidB) return;
+
+          // Solo alertar si están juntos en el equipo ACTUAL
+          if (!currentTeam[pidA] || !currentTeam[pidB]) return;
+          if (currentTeam[pidA] !== currentTeam[pidB]) return;
+
+          let togetherCount = 0, playedCount = 0;
+          recentMatches.forEach(m => {
+            const dA = m.playerDeltas.find(d => d.playerId === pidA);
+            const dB = m.playerDeltas.find(d => d.playerId === pidB);
+            if (!dA || !dB) return;
+            playedCount++;
+            if (dA.team === dB.team) togetherCount++;
+          });
+
+          if (playedCount >= 3 && togetherCount / playedCount >= 0.85) {
+            const pA = getPlayer(pidA), pB = getPlayer(pidB);
+            if (pA && pB) warnings.push(`${pA.name} y ${pB.name} han jugado juntos ${togetherCount}/${playedCount} partidos recientes`);
+          }
+        });
+      });
+
+      if (warnings.length) {
+        alertEl.style.display = 'block';
+        alertEl.innerHTML = `⚠️ <b>Sesgo detectado en equipos actuales</b><br>` + warnings.map(w => `· ${w}`).join('<br>');
+      } else {
+        alertEl.style.display = 'none';
+      }
+    }
+
+    // ===== S2: DRAFT =====
+    function renderS2() { updateProbBar(); renderChips('a'); renderChips('b'); checkTeamBias(); }
+    function updateProbBar() {
+      // Extraemos la probabilidad del enfrentamiento efectivo
+      const matchup = getEffectiveMatchup(S.teamA, S.teamB);
+
+      const pA = matchup.probA;
+      const pAp = Math.round(pA * 100);
+      const pBp = 100 - pAp;
+
+      document.getElementById('bar-a').style.width = pAp + '%';
+      document.getElementById('bar-b').style.width = pBp + '%';
+      document.getElementById('prob-label-a').textContent = `⬜ Blanco — ${pAp}%`;
+      document.getElementById('prob-label-b').textContent = `${pBp}% — 🟫 Oscuro`;
+
+      const eA = teamAvgElo(S.teamA), eB = teamAvgElo(S.teamB);
+      document.getElementById('stats-a').innerHTML = `ELO prom: <b>${Math.round(eA)}</b> · Alt: <b>${Math.round(teamAvgH(S.teamA))}cm</b> · ${S.teamA.length} jug.`;
+      document.getElementById('stats-b').innerHTML = `ELO prom: <b>${Math.round(eB)}</b> · Alt: <b>${Math.round(teamAvgH(S.teamB))}cm</b> · ${S.teamB.length} jug.`;
+    }
+    function renderChips(team) {
+      const arr = team === 'a' ? S.teamA : S.teamB;
+      document.getElementById(`team-${team}-chips`).innerHTML = arr.map(e => {
+        const p = getPlayer(e.player_id); if (!p) return '';
+        const sel = S.selectedChipId === p.id ? 'border:2px solid var(--orange);background:var(--orange-dim)' : '';
+        return `<div class="team-player-chip" draggable="true" data-pid="${p.id}" data-team="${team}" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleChipTap(event, '${p.id}', '${team}')" style="${sel}">
+      <div style="flex:1;min-width:0"><div class="chip-name">${p.name}</div><div class="chip-elo">${p.height_cm}cm · ${Math.round(p.elo_score)}</div></div>
+      ${e.is_late_arrival ? '<span class="chip-late">TARDE</span>' : ''}
+    </div>`;
+      }).join('');
+    }
+    function handleChipTap(e, pid, team) {
+      e.stopPropagation();
+      if (S.selectedChipId === pid) { S.selectedChipId = null; }
+      else { S.selectedChipId = pid; }
+      renderS2();
+    }
+    function handleBoxTap(team) {
+      if (!S.selectedChipId) return;
+      const fromTeam = S.teamA.some(x => x.player_id === S.selectedChipId) ? 'a' : 'b';
+      if (fromTeam === team) { S.selectedChipId = null; renderS2(); return; }
+      const fArr = fromTeam === 'a' ? S.teamA : S.teamB, tArr = team === 'a' ? S.teamA : S.teamB;
+      const idx = fArr.findIndex(x => x.player_id === S.selectedChipId);
+      if (idx !== -1) {
+        const [entry] = fArr.splice(idx, 1);
+        tArr.push(entry);
+        S.selectedChipId = null;
+        updateProbBar(); renderChips('a'); renderChips('b'); saveAppState();
+      }
+    }
+
+    // ===== DRAG & DROP =====
+    let dPid = null, dFrom = null;
+    function dragStart(e) { dPid = e.currentTarget.dataset.pid; dFrom = e.currentTarget.dataset.team; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; }
+    function dragEnd(e) { e.currentTarget.classList.remove('dragging');['team-a-box', 'team-b-box'].forEach(id => document.getElementById(id).classList.remove('drag-over')); }
+    function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+    function removeDragOver(e) { e.currentTarget.classList.remove('drag-over'); }
+    function drop(e, to) {
+      e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+      if (!dPid || dFrom === to) return;
+      const fArr = dFrom === 'a' ? S.teamA : S.teamB, tArr = to === 'a' ? S.teamA : S.teamB;
+      const idx = fArr.findIndex(x => x.player_id === dPid); if (idx === -1) return;
+      const [entry] = fArr.splice(idx, 1); tArr.push(entry);
+      updateProbBar(); renderChips('a'); renderChips('b'); saveAppState();
+      dPid = null; dFrom = null;
+    }
+
+    // ===== S3: PARTIDO =====
+    function startMatch() {
+      document.getElementById('s3-court-label').textContent = S.courtSize === 'half' ? '🏀 Media Cancha (K×0.80)' : '🏟️ Cancha Completa (K×1.0)';
+      goTo('s3');
+    }
+    function renderS3() {
+      ['a', 'b'].forEach(t => {
+        const arr = t === 'a' ? S.teamA : S.teamB;
+        document.getElementById(`s3-team-${t}`).innerHTML = arr.map(e => {
+          const p = getPlayer(e.player_id); if (!p) return '';
+          const lateControls = e.is_late_arrival
+            ? `<div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+                <span class="chip-late">TARDE ×0.70</span>
+                <button onclick="toggleLatePenalty('${p.id}')" style="font-size:10px;padding:2px 7px;border-radius:8px;border:1px solid var(--green);background:transparent;color:var(--green);cursor:pointer;font-family:'Georgia',serif">✓ Llegó a tiempo</button>
+               </div>`
+            : (e._wasLate
+                ? `<div style="margin-top:4px"><span style="font-size:10px;color:var(--green);background:#2ECC7120;padding:2px 7px;border-radius:8px">Sin penalización
+                    <button onclick="toggleLatePenalty('${p.id}')" style="margin-left:4px;font-size:10px;border:none;background:transparent;color:var(--text3);cursor:pointer">↩</button>
+                   </span></div>`
+                : '');
+          return `<div class="s3-player-item" style="flex-direction:column;align-items:flex-start">
+            <div style="display:flex;align-items:center;width:100%">
+              <div style="flex:1;font-size:14px;font-weight:600">${p.name}</div>
+            </div>
+            ${lateControls}
+          </div>`;
+        }).join('');
+      });
+    }
+
+    function toggleLatePenalty(pid) {
+      const toggleIn = arr => {
+        const e = arr.find(x => x.player_id === pid);
+        if (e) {
+          if (e.is_late_arrival) { e._wasLate = true; e.is_late_arrival = false; }
+          else if (e._wasLate) { e._wasLate = false; e.is_late_arrival = true; }
+        }
+      };
+      toggleIn(S.teamA); toggleIn(S.teamB);
+      renderS3();
+    }
+    function toggleTimer() {
+      const btn = document.getElementById('timer-btn');
+      if (S.timerRunning) { clearInterval(S.timerInterval); S.timerRunning = false; btn.textContent = '▶ Reanudar'; }
+      else { S.timerRunning = true; btn.textContent = '⏸ Pausar'; S.timerInterval = setInterval(() => { S.timerSeconds++; const m = Math.floor(S.timerSeconds / 60).toString().padStart(2, '0'), s = (S.timerSeconds % 60).toString().padStart(2, '0'); document.getElementById('timer-display').textContent = `${m}:${s}`; }, 1000); }
+    }
+    function endMatch() {
+      clearInterval(S.timerInterval); S.timerRunning = false;
+      document.getElementById('score-a').value = 0; document.getElementById('score-b').value = 0;
+      document.getElementById('overtime-msg').textContent = ''; document.getElementById('score-error').textContent = '';
+      goTo('s4');
+    }
+
+    // ===== MODAL: JUGADOR TARDE =====
+    function openLateModal() {
+      const inGame = [...S.teamA, ...S.teamB].map(e => e.player_id);
+      const avail = S.players.filter(p => p.is_active && !inGame.includes(p.id));
+      document.getElementById('late-player-list').innerHTML = avail.length
+        ? avail.map(p => { const r = getRank(p.elo_score); return `<div class="late-row" id="late-row-${p.id}" onclick="selectLatePlayer('${p.id}')"><div style="flex:1"><div style="font-size:16px;font-weight:600">${p.name}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">${p.height_cm}cm · <span class="rank ${r.cls}">${r.name}</span> · ELO ${Math.round(p.elo_score)}</div></div><div class="check-box" id="late-check-${p.id}"></div></div>`; }).join('')
+        : '<div style="color:var(--text2);font-size:14px;text-align:center;padding:20px 0">No hay más jugadores disponibles.</div>';
+      document.getElementById('late-suggestions').style.display = 'none';
+      S.selectedLatePlayer = null;
+      openModal('modal-late');
+    }
+    function selectLatePlayer(pid) {
+      S.selectedLatePlayer = pid;
+      document.querySelectorAll('[id^="late-row-"]').forEach(e => e.classList.remove('selected'));
+      document.querySelectorAll('[id^="late-check-"]').forEach(e => { e.className = 'check-box'; e.innerHTML = ''; });
+      document.getElementById(`late-row-${pid}`).classList.add('selected');
+      const c = document.getElementById(`late-check-${pid}`); c.className = 'check-box checked'; c.innerHTML = chkSVG();
+      generateLateSuggestions(pid);
+      document.getElementById('late-suggestions').style.display = 'block';
+    }
+    function generateLateSuggestions(pid) {
+      const nP = getPlayer(pid); if (!nP) return;
+
+      // Usar PROMEDIOS para probabilidades, sumas para balanceo
+      const eA = teamElo(S.teamA), eB = teamElo(S.teamB);
+      const dA = Math.abs((eA + nP.elo_score) - eB), dB = Math.abs(eA - (eB + nP.elo_score));
+      const bT = dA <= dB ? 'a' : 'b', bTN = bT === 'a' ? '⬜ Equipo Blanco' : '🟫 Equipo Oscuro';
+
+      // FIX: calcular probabilities con promedios reales
+      function probIfAdd(toTeam) {
+        const newSizeA = toTeam === 'a' ? S.teamA.length + 1 : S.teamA.length;
+        const newSizeB = toTeam === 'b' ? S.teamB.length + 1 : S.teamB.length;
+        const newAvgA = toTeam === 'a' ? (eA + nP.elo_score) / newSizeA : eA / Math.max(1, S.teamA.length);
+        const newAvgB = toTeam === 'b' ? (eB + nP.elo_score) / newSizeB : eB / Math.max(1, S.teamB.length);
+        return calcPA(newAvgA, newAvgB);
+      }
+
+      const pAs = probIfAdd(bT), pAp = Math.round(pAs * 100), pBp = 100 - pAp;
+
+      // Trade: también usar promedios para probabilidades
+      let bTrade = null, bTDiff = Infinity;
+      S.teamA.forEach(e => {
+        const sp = getPlayer(e.player_id); if (!sp) return;
+        const diff = Math.abs((eA + nP.elo_score - sp.elo_score) - (eB + sp.elo_score));
+        if (diff < bTDiff) {
+          bTDiff = diff;
+          const newAvgA = (eA + nP.elo_score - sp.elo_score) / S.teamA.length;
+          const newAvgB = (eB + sp.elo_score) / (S.teamB.length + 1);
+          const pa = Math.round(calcPA(newAvgA, newAvgB) * 100);
+          bTrade = { swapId: sp.id, swapName: sp.name, nPT: 'a', sT: 'b', pA: pa, pB: 100 - pa };
+        }
+      });
+      S.teamB.forEach(e => {
+        const sp = getPlayer(e.player_id); if (!sp) return;
+        const diff = Math.abs((eA + sp.elo_score) - (eB + nP.elo_score - sp.elo_score));
+        if (diff < bTDiff) {
+          bTDiff = diff;
+          const newAvgA = (eA + sp.elo_score) / (S.teamA.length + 1);
+          const newAvgB = (eB + nP.elo_score - sp.elo_score) / S.teamB.length;
+          const pa = Math.round(calcPA(newAvgA, newAvgB) * 100);
+          bTrade = { swapId: sp.id, swapName: sp.name, nPT: 'b', sT: 'a', pA: pa, pB: 100 - pa };
+        }
+      });
+
+      let html = `<div class="suggestion ideal" onclick="applySimple('${pid}','${bT}')"><div class="suggestion-icon">✨</div><div class="suggestion-title">Sugerencia Ideal — 1 clic</div><div class="suggestion-sub">Añadir <b>${nP.name}</b> al ${bTN}<br>Queda: <b>⬜ ${pAp}% vs 🟫 ${pBp}%</b></div></div>`;
+      if (bTrade) { const nTN = bTrade.nPT === 'a' ? '⬜ Blanco' : '🟫 Oscuro', sTN = bTrade.sT === 'a' ? '⬜ Blanco' : '🟫 Oscuro'; html += `<div class="suggestion trade" onclick="applyTrade('${pid}','${bTrade.nPT}','${bTrade.swapId}','${bTrade.sT}')"><div class="suggestion-icon">🔄</div><div class="suggestion-title">Trade Perfecto — 1 clic</div><div class="suggestion-sub">Añadir <b>${nP.name}</b> al ${nTN}, mover <b>${bTrade.swapName}</b> al ${sTN}<br>Queda: <b>⬜ ${bTrade.pA}% vs 🟫 ${bTrade.pB}%</b></div></div>`; }
+      document.getElementById('suggestions-content').innerHTML = html;
+    }
+    function applySimple(pid, team) { const e = { player_id: pid, is_late_arrival: true }; if (team === 'a') S.teamA.push(e); else S.teamB.push(e); if (!S.present.includes(pid)) S.present.push(pid); closeModal('modal-late'); renderS3(); }
+    function applyTrade(np, nPT, spid, sT) {
+      if (nPT === 'a') S.teamA.push({ player_id: np, is_late_arrival: true }); else S.teamB.push({ player_id: np, is_late_arrival: true });
+      if (!S.present.includes(np)) S.present.push(np);
+      if (sT === 'b') { const i = S.teamA.findIndex(e => e.player_id === spid); if (i !== -1) { const [sw] = S.teamA.splice(i, 1); S.teamB.push(sw); } }
+      else { const i = S.teamB.findIndex(e => e.player_id === spid); if (i !== -1) { const [sw] = S.teamB.splice(i, 1); S.teamA.push(sw); } }
+      closeModal('modal-late'); renderS3();
+    }
+    function forceLate(team) { if (!S.selectedLatePlayer) { alert('Primero selecciona un jugador'); return; } applySimple(S.selectedLatePlayer, team); }
+
+    // ===== S4: MARCADOR =====
+    function checkOvertime() {
+      const a = parseInt(document.getElementById('score-a').value) || 0;
+      const b = parseInt(document.getElementById('score-b').value) || 0;
+      document.getElementById('score-error').textContent = '';
+      const m = document.getElementById('overtime-msg');
+      const bothAt10 = a >= 10 && b >= 10;
+
+      if (S.deuceEnabled) {
+        const invalidDeuce = bothAt10 && Math.abs(a - b) === 1;
+        if (a === 10 && b === 10) m.textContent = '⚡ DEUCE — Hay que ganar con +2';
+        else if (invalidDeuce) m.textContent = '⚡ DEUCE — Aún no hay diferencia de 2';
+        else if (bothAt10 && Math.abs(a - b) >= 2) m.textContent = '✅ Marcador válido con deuce';
+        else if ((a === 11 || b === 11) && Math.abs(a - b) > 1) m.textContent = '✅ Victoria a 11 · Marcador válido';
+        else m.textContent = '';
+      } else {
+        if (a === 11 || b === 11) m.textContent = '✅ Victoria a 11 · Marcador válido';
+        else m.textContent = '';
+      }
+    }
+    function toggleDeuce(force) {
+      if (force !== undefined) S.deuceEnabled = force;
+      else S.deuceEnabled = !S.deuceEnabled;
+
+      const slider = document.getElementById('deuce-slider');
+      const thumb = document.getElementById('deuce-thumb');
+      const chk = document.getElementById('deuce-toggle');
+      const rule = document.getElementById('deuce-rule-card');
+
+      if (chk) chk.checked = S.deuceEnabled;
+      if (slider && thumb) {
+        if (S.deuceEnabled) {
+          slider.style.background = 'var(--orange)';
+          thumb.style.marginLeft = 'auto'; thumb.style.marginRight = '';
+        } else {
+          slider.style.background = 'var(--dark4)';
+          thumb.style.marginLeft = ''; thumb.style.marginRight = 'auto';
+        }
+      }
+      if (rule) {
+        rule.innerHTML = S.deuceEnabled
+          ? '<b style="color:var(--text)">Regla:</b> Ganador a 11. Desde 10-10 se juega deuce: ganar con +2 (12-10, 13-11...).'
+          : '<b style="color:var(--text)">Regla:</b> Ganador a 11. Sin deuce — el primero a 11 gana.';
+      }
+
+      checkOvertime();
+      saveAppState();
+    }
+
+    function getMatchesPlayed(playerId) {
+      const player = S.players.find(p => p.id === playerId);
+      const resetAt = player?.elo_reset_at ? new Date(player.elo_reset_at).getTime() : 0;
+      return S.matchHistory.filter(m => {
+        const matchTime = new Date(m.date).getTime();
+        return matchTime > resetAt && m.playerDeltas.some(d => d.playerId === playerId);
+      }).length;
+    }
+
+    // ===== MOTOR ELO =====
+    function calculateELO() {
+      const sA = parseInt(document.getElementById('score-a').value) || 0, sB = parseInt(document.getElementById('score-b').value) || 0;
+      const err = document.getElementById('score-error');
+      if (sA < 0 || sB < 0) { err.textContent = '❌ Los marcadores no pueden ser negativos'; return; }
+      if (sA === sB) { err.textContent = '❌ No puede haber empate'; return; }
+      if (!S.teamA.length || !S.teamB.length) { err.textContent = '❌ Equipos vacíos'; return; }
+
+      // Validar deuce: si ambos llegaron a 10, la diferencia debe ser ≥ 2
+      if (!S.deuceEnabled && (sA > 11 || sB > 11)) {
+        err.textContent = '❌ Sin deuce: el ganador no puede pasar de 11';
+        return;
+      }
+      if (S.deuceEnabled && sA >= 10 && sB >= 10 && Math.abs(sA - sB) === 1) {
+        err.textContent = '❌ Marcador inválido: con deuce (10-10) hay que ganar con +2';
+        return;
+      }
+      // Y no se puede pasar de 11 si no es por deuce
+      if ((sA > 11 || sB > 11) && !(sA >= 10 && sB >= 10)) {
+        err.textContent = '❌ Marcador inválido: nadie puede pasar de 11 sin que el otro llegue a 10';
+        return;
+      }
+
+      err.textContent = '';
+      const wT = sA > sB ? 'a' : 'b', diff = Math.abs(sA - sB);
+
+      // USA ESTO: Curva suave y perfecta de victoria
+      const MM = Math.sqrt(diff + 1) / Math.sqrt(2);
+      const K = K_BASE * MM * (S.courtSize === 'half' ? 0.80 : 1.0);
+
+      // CAMBIO AQUÍ: Usamos los promedios para la probabilidad justa
+      const matchup = getEffectiveMatchup(S.teamA, S.teamB);
+      const pA = matchup.probA;
+      const pB = 1 - pA;
+
+      const bdA = wT === 'a' ? K * (1 - pA) : K * (0 - pA), bdB = wT === 'b' ? K * (1 - pB) : K * (0 - pB);
+      const hA = teamAvgH(S.teamA), hB = teamAvgH(S.teamB);
+      S.matchResults = [];
+      const rec = { id: uid(), date: new Date().toISOString(), scoreA: sA, scoreB: sB, courtSize: S.courtSize, winnerTeam: wT, pA: Math.round(pA * 100), playerDeltas: [], mvpId: null };
+
+      let bestDelta = -Infinity, mvpId = null;
+      const procTeam = (team, tid, bd, won) => {
+        team.forEach(e => {
+          const p = getPlayer(e.player_id); if (!p) return;
+
+          const matches = getMatchesPlayed(p.id);
+          // Rookie Boost: Acelera el Elo los primeros 10 partidos
+          const rookieMultiplier = matches < 5 ? 2.0 : matches < 10 ? 1.5 : 1.0;
+
+          const iD = bd * rookieMultiplier;
+          const fD = e.is_late_arrival ? iD * 0.70 : iD;
+
+          if (won && fD > bestDelta) { bestDelta = fD; mvpId = p.id; }
+
+          const oE = p.elo_score, nE = Math.max(100, oE + fD);
+          const pi = S.players.findIndex(x => x.id === p.id);
+          if (pi !== -1) S.players[pi].elo_score = nE;
+
+          const hDiff = Math.round(p.height_cm - (tid === 'a' ? hB : hA));
+          const r = { playerId: p.id, name: p.name, oldElo: oE, newElo: nE, delta: fD, won, isLate: e.is_late_arrival, team: tid, heightDiff: hDiff, matchesBeforeThis: matches };
+          S.matchResults.push(r);
+          rec.playerDeltas.push({ playerId: p.id, name: p.name, oldElo: oE, newElo: nE, delta: fD, won, isLate: e.is_late_arrival, team: tid });
+        });
+      };
+
+      procTeam(S.teamA, 'a', bdA, wT === 'a');
+      procTeam(S.teamB, 'b', bdB, wT === 'b');
+      rec.mvpId = mvpId;
+      S.matchResults.forEach(r => { if (r.playerId === mvpId) r.isMvp = true; });
+      S.matchHistory.unshift(rec);
+      savePlayers(); saveHistory();
+      document.getElementById('s5-result').textContent = `${wT === 'a' ? '⬜ Equipo Blanco' : '🟫 Equipo Oscuro'} gana · ${sA} – ${sB}`;
+      renderS5(); goTo('s5');
+    }
+
+    // ===== S5: RESUMEN =====
+    function renderS5() {
+      const renderRow = r => {
+        const sign = r.delta >= 0 ? '+' : '', cls = r.delta >= 0 ? 'delta-pos' : 'delta-neg';
+        const oR = getRank(r.oldElo), nR = getRank(r.newElo), rChg = nR.name !== oR.name;
+        const isRookie = r.matchesBeforeThis < 10;
+        const right = S.godMode
+          ? `<div style="text-align:right"><div style="font-size:20px;font-weight:bold" class="${cls}">${sign}${Math.round(r.delta)}</div><div style="font-size:11px;color:var(--text2)">${Math.round(r.oldElo)} → ${Math.round(r.newElo)}</div></div>`
+          : `<div style="text-align:right"><span class="rank ${nR.cls}">${nR.name}</span>${rChg ? `<div style="font-size:11px;color:${r.delta >= 0 ? 'var(--green)' : 'var(--red)'};margin-top:3px">${r.delta >= 0 ? '↑ Subió' : '↓ Bajó'} de rango</div>` : ''}</div>`;
+        return `<div class="elo-result-row"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;display:flex;align-items:center;gap:6px">${r.isMvp ? '🌟 ' : ''}${r.name}${isRookie ? ' 🔰' : ''}${r.isLate ? '<span class="chip-late">TARDE</span>' : ''}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${S.godMode ? `Alt: ${r.heightDiff > 0 ? '+' : ''}${r.heightDiff}cm${r.isLate ? ' · Tarde: ×0.70' : ''}` : `Antes: <span class="rank ${oR.cls}">${oR.name}</span>`}</div></div>${right}</div>`;
+      };
+      document.getElementById('s5-winners').innerHTML = S.matchResults.filter(r => r.won).map(renderRow).join('');
+      document.getElementById('s5-losers').innerHTML = S.matchResults.filter(r => !r.won).map(renderRow).join('');
+    }
+    function toggleGodMode() {
+      S.godMode = !S.godMode;
+      document.getElementById('god-mode-btn').textContent = S.godMode ? '👁️' : '⚙️';
+      document.getElementById('god-banner').style.display = S.godMode ? 'block' : 'none';
+      renderS5();
+    }
+
+    // ===== HISTORIAL =====
+    function openHistorial() {
+      S.histTab = 'all'; S.histCourtFilter = 'all';
+      document.getElementById('htab-all').classList.add('active');
+      document.getElementById('htab-player').classList.remove('active');
+      document.getElementById('hist-player-filter').style.display = 'none';
+      populatePlayerSelect();
+      renderHistorial();
+      openModal('modal-historial');
+    }
+    function setHistFilter(type) {
+      S.histCourtFilter = type;
+      renderHistorial();
+    }
+    function switchHistTab(tab) {
+      S.histTab = tab;
+      ['all','player','h2h'].forEach(t => {
+        document.getElementById(`htab-${t}`)?.classList.toggle('active', tab === t);
+      });
+      document.getElementById('hist-player-filter').style.display = tab === 'player' ? 'block' : 'none';
+      document.getElementById('hist-h2h-filter').style.display = tab === 'h2h' ? 'block' : 'none';
+      renderHistorial();
+    }
+    function populatePlayerSelect() {
+      const names = new Map();
+      S.matchHistory.forEach(m => m.playerDeltas.forEach(d => { if (!names.has(d.playerId)) names.set(d.playerId, d.name); }));
+      const opts = '<option value="">— Elige un jugador —</option>' + [...names.entries()].map(([id, name]) => `<option value="${id}">${name}</option>`).join('');
+      document.getElementById('hist-player-select').innerHTML = opts;
+      document.getElementById('h2h-player-a').innerHTML = opts.replace('Elige un jugador', 'Jugador A');
+      document.getElementById('h2h-player-b').innerHTML = opts.replace('Elige un jugador', 'Jugador B');
+    }
+    function renderHistorial() {
+      const cont = document.getElementById('historial-content');
+      let matches = S.matchHistory, filterPid = null;
+
+      // Highlight filter buttons
+      ['all', 'half', 'full'].forEach(f => {
+        const el = document.getElementById(`hf-${f}`);
+        if (el) el.classList.toggle('active', S.histCourtFilter === f);
+      });
+
+      if (S.histCourtFilter !== 'all') matches = matches.filter(m => m.courtSize === S.histCourtFilter);
+
+      if (S.histTab === 'h2h') {
+        const pidA = document.getElementById('h2h-player-a').value;
+        const pidB = document.getElementById('h2h-player-b').value;
+        if (!pidA || !pidB || pidA === pidB) {
+          cont.innerHTML = '<div style="color:var(--text2);font-size:14px;text-align:center;padding:30px 0">Elige dos jugadores distintos para ver su H2H.</div>';
+          return;
+        }
+        const sharedMatches = matches.filter(m => {
+          const dA = m.playerDeltas.find(d => d.playerId === pidA);
+          const dB = m.playerDeltas.find(d => d.playerId === pidB);
+          return dA && dB;
+        });
+        const pNameA = getPlayer(pidA)?.name || pidA;
+        const pNameB = getPlayer(pidB)?.name || pidB;
+
+        let winsA = 0, winsB = 0, together = 0;
+        sharedMatches.forEach(m => {
+          const dA = m.playerDeltas.find(d => d.playerId === pidA);
+          const dB = m.playerDeltas.find(d => d.playerId === pidB);
+          if (dA.team === dB.team) { together++; }
+          else { if (dA.won) winsA++; else winsB++; }
+        });
+        const versus = winsA + winsB;
+        const pctA = versus ? Math.round(winsA / versus * 100) : 50;
+
+        cont.innerHTML = `
+          <div class="card-sm" style="margin-bottom:16px;text-align:center">
+            <div style="font-size:22px;font-weight:bold;margin-bottom:6px">${pNameA} <span style="color:var(--text3)">vs</span> ${pNameB}</div>
+            <div style="font-size:13px;color:var(--text2);margin-bottom:12px">${versus} enfrentamientos · ${together} partidos en el mismo equipo</div>
+            ${versus > 0 ? `
+            <div class="prob-bar"><div class="prob-a" style="width:${pctA}%"></div><div class="prob-b" style="width:${100-pctA}%"></div></div>
+            <div class="prob-labels" style="margin-top:4px">
+              <span style="color:var(--orange)">🏆 ${pNameA} ${winsA}V (${pctA}%)</span>
+              <span style="color:var(--blue)">${pNameB} ${winsB}V (${100-pctA}%) 🏆</span>
+            </div>` : '<div style="color:var(--text2);font-size:13px">Aún no han jugado uno contra el otro.</div>'}
+          </div>
+          ${sharedMatches.map((m, idx) => {
+            const dA = m.playerDeltas.find(d => d.playerId === pidA);
+            const dB = m.playerDeltas.find(d => d.playerId === pidB);
+            const sameTeam = dA.team === dB.team;
+            const d = new Date(m.date);
+            const dStr = d.toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' });
+            const winner = sameTeam ? (dA.won ? '🏆 Ganaron juntos' : '💔 Perdieron juntos') : (dA.won ? `🏆 Ganó ${pNameA}` : `🏆 Ganó ${pNameB}`);
+            const sA = Math.round(dA.delta), sB = Math.round(dB.delta);
+            return `<div class="card-sm" style="margin-bottom:8px;font-size:13px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="color:var(--text2)">${dStr} · ${m.scoreA}–${m.scoreB}</span>
+                <span>${winner}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;color:var(--text2)">
+                <span>${pNameA}: <b style="color:${sA>=0?'var(--green)':'var(--red)'}">${sA>=0?'+':''}${sA}</b></span>
+                <span>${pNameB}: <b style="color:${sB>=0?'var(--green)':'var(--red)'}">${sB>=0?'+':''}${sB}</b></span>
+              </div>
+            </div>`;
+          }).join('')}`;
+        return;
+      }
+
+      if (S.histTab === 'player') {
+        filterPid = document.getElementById('hist-player-select').value;
+        if (!filterPid) { cont.innerHTML = '<div style="color:var(--text2);font-size:14px;text-align:center;padding:30px 0">Elige un jugador para ver su historial.</div>'; return; }
+        matches = matches.filter(m => m.playerDeltas.some(d => d.playerId === filterPid));
+      }
+      if (!matches.length) { cont.innerHTML = '<div style="color:var(--text2);font-size:14px;text-align:center;padding:40px 0">No hay partidos registrados aún.</div>'; return; }
+
+      // Stats summary when filtering by player
+      let summaryHTML = '';
+      if (filterPid) {
+        const all = matches.flatMap(m => m.playerDeltas.filter(d => d.playerId === filterPid));
+        const wins = all.filter(d => d.won).length, losses = all.length - wins;
+        const totalDelta = all.reduce((s, d) => s + d.delta, 0);
+        const pName = document.getElementById('hist-player-select').options[document.getElementById('hist-player-select').selectedIndex].text;
+        const curP = S.players.find(p => p.id === filterPid);
+        const curElo = curP ? Math.round(curP.elo_score) : '?';
+        const r = curP ? getRank(curP.elo_score) : { name: '—', cls: 'rank-silver' };
+        summaryHTML = `<div class="card-sm" style="margin-bottom:16px;display:flex;gap:16px;align-items:center">
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:bold">${pName}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px"><span class="rank ${r.cls}">${r.name}</span> · ELO actual: <b>${curElo}</b></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:13px"><span style="color:var(--green)">▲${wins}V</span> <span style="color:var(--red)">▼${losses}D</span></div>
+        <div style="font-size:13px;margin-top:2px;color:${totalDelta >= 0 ? 'var(--green)' : 'var(--red)'}">Balance: ${totalDelta >= 0 ? '+' : ''}${Math.round(totalDelta)} ELO</div>
+      </div>
+    </div>`;
+      }
+
+      let html = summaryHTML;
+      matches.forEach((m, idx) => {
+        const d = new Date(m.date);
+        const dStr = d.toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' });
+        const tStr = d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+        const wN = m.winnerTeam === 'a' ? '⬜ Blanco' : '🟫 Oscuro';
+        const cL = m.courtSize === 'half' ? 'Media Cancha' : 'Cancha Completa';
+        const deltas = filterPid ? m.playerDeltas.filter(d => d.playerId === filterPid) : m.playerDeltas;
+        const rows = deltas.map(d => {
+          const sign = d.delta >= 0 ? '+' : '', col = d.delta >= 0 ? 'var(--green)' : 'var(--red)';
+          const isMvp = m.mvpId === d.playerId;
+          return `<div class="match-player-line">
+        <span>${isMvp ? '🌟 ' : ''}${d.team === 'a' ? '⬜' : '🟫'} ${d.name}${d.won ? ' 🏆' : ''}${d.isLate ? ' <span class="chip-late">TARDE</span>' : ''}</span>
+        <span style="color:${col};font-weight:bold;white-space:nowrap">${sign}${Math.round(d.delta)} <span style="color:var(--text3);font-weight:normal;font-size:11px">(${Math.round(d.oldElo)}→${Math.round(d.newElo)})</span></span>
+      </div>`;
+        }).join('');
+        html += `<div class="match-card">
+      <div class="match-card-hdr" onclick="toggleMatchCard('mc${idx}')">
+        <div>
+          <div class="match-score">${m.scoreA} — ${m.scoreB}</div>
+          <div class="match-meta">${dStr} · ${tStr} · ${cL}</div>
+          <div class="match-meta">Prob. inicial: ⬜ ${m.pA}% vs 🟫 ${100 - m.pA}%</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="match-winner-badge">${wN} 🏆</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:6px">▾ ver detalles${m.mvpId ? ' · MVP 🌟' : ''}</div>
+        </div>
+      </div>
+      <div class="match-body" id="mc${idx}">${rows}</div>
+    </div>`;
+      });
+      cont.innerHTML = html;
+    }
+    function toggleMatchCard(id) { document.getElementById(id).classList.toggle('open'); }
+
+    // ===== CRUD JUGADORES =====
+    function openRosterManager() { renderRosterList(); openModal('modal-roster'); }
+    function renderRosterList() {
+      const el = document.getElementById('roster-list');
+      if (!S.players.length) { el.innerHTML = '<div style="color:var(--text2);text-align:center;padding:20px">No hay jugadores.</div>'; return; }
+      const active = S.players.filter(p => p.is_active), inactive = S.players.filter(p => !p.is_active);
+      const renderCard = p => {
+        const r = getRank(p.elo_score), ini = p.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(), col = AV_COLORS[p.name.charCodeAt(0) % AV_COLORS.length];
+        // Delete pill only for inactive players, with tooltip explaining why
+        const deletePill = !p.is_active ? `<button class="action-pill a-danger" onclick="openDeletePlayer('${p.id}')">🗑️ Eliminar</button>` : '';
+        const activePill = p.is_active
+          ? `<button class="action-pill a-warn" onclick="toggleActive('${p.id}')">🚫 Desactivar</button>`
+          : `<button class="action-pill a-green" onclick="toggleActive('${p.id}')">✅ Activar</button>`;
+        const isRookie = getMatchesPlayed(p.id) < 10;
+        const wl = getWinLoss(p.id);
+        return `<div class="card-sm" style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="avatar" style="width:38px;height:38px;font-size:13px;flex-shrink:0;background:${col}22;color:${col}">${ini}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15px;font-weight:600">${p.name}${isRookie ? ' 🔰' : ''}${!p.is_active ? ' <span style="font-size:11px;color:var(--text3)">(inactivo)</span>' : ''}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">${p.height_cm}cm · <span class="rank ${r.cls}">${r.name}</span> · ELO: <b>${Math.round(p.elo_score)}</b> · ${wl}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:1px">${p.archetypes.join(', ') || 'Sin arquetipo'}</div>
+        </div>
+      </div>
+      <div class="roster-actions">
+        <button class="action-pill" onclick="openEditPlayer('${p.id}')">✏️ Editar</button>
+        <button class="action-pill a-warn" onclick="openResetELO('${p.id}')">↺ Reset ELO</button>
+        ${activePill}
+        ${deletePill}
+      </div>
+    </div>`;
+      };
+      let html = '';
+      if (active.length) { html += `<div style="font-size:11px;color:var(--text3);letter-spacing:1px;font-weight:bold;text-transform:uppercase;padding:0 2px 8px">Activos (${active.length})</div>`; html += active.map(renderCard).join(''); }
+      if (inactive.length) { html += `<div style="font-size:11px;color:var(--text3);letter-spacing:1px;font-weight:bold;text-transform:uppercase;padding:14px 2px 8px">Inactivos (${inactive.length}) — se pueden eliminar</div>`; html += inactive.map(renderCard).join(''); }
+      el.innerHTML = html;
+    }
+    function openAddPlayer() {
+      document.getElementById('modal-player-title').textContent = 'Nuevo Jugador';
+      document.getElementById('p-name').value = ''; document.getElementById('p-height').value = '';
+      document.getElementById('p-stamina').value = '7'; document.getElementById('p-edit-id').value = '';
+      renderArchGrid([]); openModal('modal-player');
+    }
+    function openEditPlayer(id) {
+      const p = S.players.find(x => x.id === id); if (!p) return;
+      document.getElementById('modal-player-title').textContent = 'Editar Jugador';
+      document.getElementById('p-name').value = p.name; document.getElementById('p-height').value = p.height_cm;
+      document.getElementById('p-stamina').value = p.stamina_score || 7; document.getElementById('p-edit-id').value = id;
+      renderArchGrid(p.archetypes || []); closeModal('modal-roster'); openModal('modal-player');
+    }
+    function renderArchGrid(sel) { document.getElementById('arch-grid').innerHTML = ARCHETYPES.map(a => `<div class="arch-chip ${sel.includes(a) ? 'selected' : ''}" onclick="this.classList.toggle('selected')">${a}</div>`).join(''); }
+    function savePlayer() {
+      const name = document.getElementById('p-name').value.trim(), height = parseInt(document.getElementById('p-height').value) || 175;
+      const stamina = Math.min(10, Math.max(1, parseFloat(document.getElementById('p-stamina').value) || 7));
+      const editId = document.getElementById('p-edit-id').value;
+      const archetypes = [...document.querySelectorAll('#arch-grid .arch-chip.selected')].map(e => e.textContent);
+      if (!name) { alert('El nombre es obligatorio'); return; }
+      if (height < 140 || height > 230) { alert('La altura debe estar entre 140 y 230 cm'); return; }
+      if (editId) { const i = S.players.findIndex(p => p.id === editId); if (i !== -1) S.players[i] = { ...S.players[i], name, height_cm: height, stamina_score: stamina, archetypes }; }
+      else S.players.push({ id: uid(), name, height_cm: height, elo_score: 1200, stamina_score: stamina, archetypes, is_active: true });
+      savePlayers(); closeModal('modal-player'); openModal('modal-roster'); renderRosterList(); renderS1();
+    }
+    function toggleActive(id) {
+      const i = S.players.findIndex(p => p.id === id);
+      if (i !== -1) { S.players[i].is_active = !S.players[i].is_active; if (!S.players[i].is_active) S.present = S.present.filter(x => x !== id); }
+      savePlayers(); renderRosterList(); renderS1();
+    }
+
+    // ===== ELIMINAR JUGADOR (hard delete, solo inactivos) =====
+    function openDeletePlayer(id) {
+      const p = S.players.find(x => x.id === id); if (!p) return;
+      if (p.is_active) { alert('Solo se pueden eliminar jugadores inactivos.\nPrimero usa 🚫 Desactivar.'); return; }
+      S.pendingDeleteId = id;
+      document.getElementById('cdel-body').innerHTML = `Esta acción es <b style="color:var(--red)">permanente e irreversible</b>. <b>${p.name}</b> desaparecerá del roster por completo.<br><br>Para confirmar, escribe su nombre exactamente: <b style="color:var(--gold)">"${p.name}"</b>`;
+      document.getElementById('cdel-input').value = '';
+      document.getElementById('cdel-btn').disabled = true;
+      document.getElementById('cdel-hint').textContent = '';
+      openConfirm('confirm-delete');
+    }
+    function checkDeleteConfirm() {
+      const p = S.players.find(x => x.id === S.pendingDeleteId); if (!p) return;
+      const typed = document.getElementById('cdel-input').value, match = typed === p.name;
+      document.getElementById('cdel-btn').disabled = !match;
+      const hint = document.getElementById('cdel-hint');
+      hint.textContent = typed.length > 0 ? (match ? '✓ Nombre correcto — puedes continuar' : `✗ Escribe exactamente: "${p.name}"`) : '';
+      hint.style.color = match ? 'var(--green)' : 'var(--red)';
+    }
+    function executeDeletePlayer() {
+      const id = S.pendingDeleteId; if (!id) return;
+      S.players = S.players.filter(p => p.id !== id);
+      S.present = S.present.filter(x => x !== id);
+      savePlayers();
+      closeConfirm('confirm-delete');
+      renderRosterList(); renderS1();
+      S.pendingDeleteId = null;
+    }
+
+    // ===== RESET ELO (con verificación RESET en mayúsculas) =====
+    function openResetELO(id) {
+      const p = S.players.find(x => x.id === id); if (!p) return;
+      S.pendingResetId = id;
+      document.getElementById('creset-body').innerHTML = `El ELO de <b>${p.name}</b> (actualmente <b style="color:var(--orange)">${Math.round(p.elo_score)}</b>) volverá a <b style="color:var(--orange)">1200</b>.<br><br>Esta acción no se puede deshacer.`;
+      document.getElementById('creset-input').value = '';
+      document.getElementById('creset-btn').disabled = true;
+      document.getElementById('creset-hint').textContent = '';
+      closeModal('modal-roster');
+      openConfirm('confirm-reset');
+    }
+    function checkResetConfirm() {
+      const typed = document.getElementById('creset-input').value, match = typed === 'RESET';
+      document.getElementById('creset-btn').disabled = !match;
+      const hint = document.getElementById('creset-hint');
+      hint.textContent = typed.length > 0 ? (match ? '✓ Confirmado — puedes continuar' : '✗ Escribe exactamente: RESET (mayúsculas)') : '';
+      hint.style.color = match ? 'var(--green)' : 'var(--gold)';
+    }
+    function executeResetELO() {
+      const id = S.pendingResetId; if (!id) return;
+      const i = S.players.findIndex(p => p.id === id);
+      if (i !== -1) {
+        S.players[i].elo_score = 1200;
+        S.players[i].elo_reset_at = new Date().toISOString();
+      }
+      savePlayers();
+      closeConfirm('confirm-reset');
+      openModal('modal-roster');
+      renderRosterList(); renderS1();
+      S.pendingResetId = null;
+    }
+    function cancelResetELO() {
+      closeConfirm('confirm-reset');
+      openModal('modal-roster');
+    }
+    function cancelMatch() {
+      clearInterval(S.timerInterval); S.timerRunning = false;
+      S.teamA = []; S.teamB = []; // limpiar antes → newGame no conserva nadie
+      closeConfirm('confirm-cancel');
+      newGame();
+    }
+
+    // ===== NUEVO PARTIDO =====
+    function newGame() {
+      // Conservar pre-seleccionados los jugadores que acaban de jugar
+      const justPlayed = [...S.teamA, ...S.teamB]
+        .map(e => e.player_id)
+        .filter(id => S.players.find(p => p.id === id && p.is_active));
+      S.present = justPlayed.length > 0 ? justPlayed : [];
+
+      S.teamA = []; S.teamB = []; S.matchResults = [];
+      S.timerSeconds = 0; S.timerRunning = false; clearInterval(S.timerInterval);
+      S.selectedLatePlayer = null; S.godMode = false; S.selectedChipId = null;
+      saveAppState();
+      document.getElementById('god-mode-btn').textContent = '⚙️';
+      document.getElementById('god-banner').style.display = 'none';
+      document.getElementById('timer-display').textContent = '00:00';
+      document.getElementById('timer-btn').textContent = '▶ Timer';
+      goTo('s1');
+    }
+
+    function exportBackup() {
+      const data = {
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        players: S.players,
+        matchHistory: S.matchHistory
+      };
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const fecha = new Date().toISOString().slice(0, 10);
+      a.download = `basket-familiar-${fecha}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ===== MODAL / CONFIRM HELPERS =====
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function closeOnOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+    function openConfirm(id) { document.getElementById(id).classList.add('open'); }
+    function closeConfirm(id) { document.getElementById(id).classList.remove('open'); }
+
+    // ===== ARRANQUE =====
+    loadData();
+    renderS1();
+  </script>
+</body>
+
+</html>
