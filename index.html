@@ -899,13 +899,34 @@
 
 <body>
 
+  <!-- S0: CÓDIGO FAMILIAR -->
+  <div class="screen active" id="s0">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;max-width:430px;margin:0 auto">
+      <div style="font-size:48px;margin-bottom:20px">🏀</div>
+      <div style="font-size:24px;font-weight:bold;margin-bottom:8px">Basket Familiar</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:32px;text-align:center">
+        Ingresa el código de tu familia para sincronizar datos entre dispositivos
+      </div>
+      <input class="form-input" id="family-code-input" type="text" placeholder="Ej: basket2024"
+        style="text-align:center;font-size:18px;max-width:280px;margin-bottom:16px"
+        autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="btn btn-primary" style="max-width:280px" onclick="submitFamilyCode()">
+        🔑 Entrar
+      </button>
+      <div style="font-size:12px;color:var(--text3);margin-top:20px;text-align:center;line-height:1.6" id="s0-status">
+        Tu código es como una contraseña.<br>Todos los dispositivos con el mismo código comparten datos.
+      </div>
+    </div>
+  </div>
+
   <!-- S1: ASISTENCIA -->
-  <div class="screen active" id="s1">
+  <div class="screen" id="s1">
     <div class="hdr">
       <div style="flex:1">
         <div class="hdr-title">🏀 Basket Familiar</div>
         <div class="hdr-sub" id="s1-date"></div>
       </div>
+      <button class="icon-btn" onclick="logoutCloud()" title="Cambiar código familiar">☁️</button>
       <button class="icon-btn" onclick="openHistorial()" title="Historial de partidos">📋</button>
       <button class="icon-btn" onclick="openRosterManager()" title="Gestionar Roster">⚙️</button>
     </div>
@@ -1000,10 +1021,14 @@
         <div id="s3-team-b"></div>
       </div>
     </div>
-    <div style="display:flex;gap:10px;padding:8px 16px">
-      <button class="btn btn-secondary btn-sm" style="flex:1;padding:14px" onclick="openLateModal()">+ Jugador Tarde</button>
-      <button class="btn btn-secondary btn-sm" style="flex:1;padding:14px" id="timer-btn" onclick="toggleTimer()">▶ Timer</button>
-      <button class="btn btn-secondary btn-sm" style="padding:14px 16px" onclick="openConfirm('confirm-cancel')" title="Cancelar partido">✕</button>
+    <div style="display:flex;gap:8px;padding:8px 16px">
+      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" onclick="openLateModal()">+ Tarde</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" onclick="openMidEdit()">✏️ Equipos</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" id="timer-btn" onclick="toggleTimer()">▶ Timer</button>
+      <button class="btn btn-secondary btn-sm" style="padding:12px 14px" onclick="openConfirm('confirm-cancel')" title="Cancelar">✕</button>
+    </div>
+    <div style="padding:4px 16px 0">
+      <button class="btn btn-sm" style="width:100%;padding:12px;background:var(--orange-dim);border:1px solid var(--orange);color:var(--orange);border-radius:var(--radius-sm);font-size:13px;font-family:'Georgia',serif;cursor:pointer" onclick="openDNFModal()">🏁 DNF — Partido sin completar</button>
     </div>
     <div style="height:100px"></div>
     <div class="fab"><button class="btn btn-danger" onclick="endMatch()">🏁 Finalizar Partido</button></div>
@@ -1109,10 +1134,12 @@
           <option value="">— Jugador B —</option>
         </select>
       </div>
-      <div style="margin-bottom:14px;display:flex;gap:8px">
+      <div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
         <button class="action-pill" id="hf-all" onclick="setHistFilter('all')" style="flex:1">Todas</button>
         <button class="action-pill" id="hf-half" onclick="setHistFilter('half')" style="flex:1">Media</button>
         <button class="action-pill" id="hf-full" onclick="setHistFilter('full')" style="flex:1">Completa</button>
+        <button class="action-pill" id="hf-dnf" onclick="setHistFilter('dnf')" style="flex:1">DNF</button>
+        <button class="action-pill" id="hf-done" onclick="setHistFilter('done')" style="flex:1">Completos</button>
       </div>
       <div id="historial-content">
         <div style="color:var(--text2);font-size:14px;text-align:center;padding:40px 0">No hay partidos registrados aún.
@@ -1131,6 +1158,7 @@
       <div style="display:flex;gap:8px;margin-bottom:20px">
         <button class="btn btn-primary" onclick="openAddPlayer()">+ Añadir Jugador</button>
         <button class="btn btn-secondary" style="width:auto;padding:18px 16px;white-space:nowrap" onclick="exportBackup()" title="Descargar copia de seguridad">📤 Backup</button>
+        <button class="btn btn-secondary" style="width:auto;padding:18px 16px;white-space:nowrap" onclick="forceUpload()" title="Subir datos a la nube">☁️ Subir</button>
       </div>
       <div id="roster-list"></div>
     </div>
@@ -1240,11 +1268,211 @@
     </div>
   </div>
 
+  <!-- MODAL: DNF -->
+  <div class="modal-overlay" id="modal-dnf" onclick="closeOnOverlay(event,'modal-dnf')">
+    <div class="modal">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="modal-title" style="margin:0">🏁 Partido sin Completar</div>
+        <button class="back-btn" onclick="closeModal('modal-dnf')">✕</button>
+      </div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">El parcial se guardará en el historial. El ELO se ajusta <b style="color:var(--text)">proporcionalmente al avance</b> del partido (puntos totales vs 22).</div>
+      <div style="display:flex;gap:16px;padding:0 0 12px;align-items:flex-start">
+        <div style="flex:1;text-align:center">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">⬜ Blanco</div>
+          <input class="score-input" type="number" id="dnf-score-a" min="0" max="10" value="0" oninput="updateDNFFactor()" inputmode="numeric" style="font-size:52px;padding:12px 0">
+        </div>
+        <div style="padding-top:52px;font-size:28px;color:var(--text3);font-weight:bold">—</div>
+        <div style="flex:1;text-align:center">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">🟫 Oscuro</div>
+          <input class="score-input" type="number" id="dnf-score-b" min="0" max="10" value="0" oninput="updateDNFFactor()" inputmode="numeric" style="font-size:52px;padding:12px 0">
+        </div>
+      </div>
+      <div class="card-sm" style="margin-bottom:12px;font-size:13px;text-align:center;line-height:1.8">
+        Factor ELO: <b style="color:var(--orange)" id="dnf-factor-display">—</b>
+        <div style="font-size:11px;color:var(--text3)" id="dnf-factor-sub"></div>
+      </div>
+      <div style="font-size:13px;color:var(--red);text-align:center;min-height:20px;margin-bottom:10px" id="dnf-error"></div>
+      <button class="btn btn-warning" onclick="confirmDNF()" style="margin-bottom:8px">💾 Guardar como DNF</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-dnf')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR EQUIPOS MID-MATCH -->
+  <div class="modal-overlay" id="modal-mid-edit" onclick="closeOnOverlay(event,'modal-mid-edit')">
+    <div class="modal">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="modal-title" style="margin:0">✏️ Editar Equipos</div>
+        <button class="back-btn" onclick="closeModal('modal-mid-edit')">✕</button>
+      </div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">¿Cuánto va el marcador <b style="color:var(--text)">ahora mismo</b>? El ELO de los jugadores trasladados se ponderará según su tiempo en cada equipo.</div>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px">
+        <div style="flex:1;text-align:center">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">⬜ Blanco</div>
+          <input class="score-input" type="number" id="mid-score-a" min="0" max="11" value="0" inputmode="numeric" style="font-size:48px;padding:10px 0">
+        </div>
+        <div style="font-size:24px;color:var(--text3);font-weight:bold;padding-top:22px">—</div>
+        <div style="flex:1;text-align:center">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">🟫 Oscuro</div>
+          <input class="score-input" type="number" id="mid-score-b" min="0" max="11" value="0" inputmode="numeric" style="font-size:48px;padding:10px 0">
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Toca un jugador para moverlo al equipo contrario:</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:bold;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">⬜ Blanco</div>
+          <div id="mid-team-a"></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:bold;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">🟫 Oscuro</div>
+          <div id="mid-team-b"></div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px" id="mid-transfers-log"></div>
+      <div style="font-size:13px;color:var(--red);min-height:20px;margin-bottom:10px" id="mid-edit-error"></div>
+      <button class="btn btn-primary" onclick="applyMidEdit()">✅ Confirmar Cambios</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (compat mode) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
   <script>
     // ===== CONSTANTES =====
     const ARCHETYPES = ['Tirador', 'Defensa', 'Armador', 'Pivot', 'Alero', 'Base'];
     const HEIGHT_WEIGHT = 0.05, K_BASE = 32;
     const AV_COLORS = ['#E8622A', '#3498DB', '#2ECC71', '#9B59B6', '#E74C3C', '#F39C12', '#1ABC9C', '#E91E63', '#00BCD4', '#FF5722'];
+
+    // ===== FIREBASE CONFIG =====
+    const FIREBASE_CONFIG = {
+      apiKey: "PEGAR_AQUI",
+      authDomain: "PEGAR_AQUI",
+      projectId: "PEGAR_AQUI",
+      storageBucket: "PEGAR_AQUI",
+      messagingSenderId: "PEGAR_AQUI",
+      appId: "PEGAR_AQUI"
+    };
+
+    let fbApp = null, fbDb = null, fbAuth = null, fbRoomId = null, fbUnsubscribe = null;
+
+    async function hashCode(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function initFirebase(familyCode) {
+      if (!firebase.apps.length) {
+        fbApp = firebase.initializeApp(FIREBASE_CONFIG);
+      } else {
+        fbApp = firebase.app();
+      }
+      fbDb = firebase.firestore();
+      fbAuth = firebase.auth();
+      fbRoomId = await hashCode(familyCode);
+      await fbAuth.signInAnonymously();
+      localStorage.setItem('bk_family_code', familyCode);
+      startRealtimeSync();
+    }
+
+    async function submitFamilyCode() {
+      const code = document.getElementById('family-code-input').value.trim();
+      if (!code || code.length < 3) {
+        document.getElementById('s0-status').innerHTML = '<span style="color:var(--red)">❌ El código debe tener al menos 3 caracteres</span>';
+        return;
+      }
+      document.getElementById('s0-status').innerHTML = '<span style="color:var(--orange)">⏳ Conectando...</span>';
+      try {
+        await initFirebase(code);
+        await pullFromCloud();
+        document.getElementById('s0').classList.remove('active');
+        goTo('s1');
+      } catch (e) {
+        document.getElementById('s0-status').innerHTML = `<span style="color:var(--red)">❌ Error: ${e.message}</span>`;
+      }
+    }
+
+    function logoutCloud() {
+      if (confirm('¿Desconectar de la nube? Tendrás que ingresar el código familiar de nuevo.')) {
+        if (fbUnsubscribe) fbUnsubscribe();
+        localStorage.removeItem('bk_family_code');
+        fbApp = null; fbDb = null; fbAuth = null; fbRoomId = null;
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('s0').classList.add('active');
+      }
+    }
+
+    // ===== CLOUD SYNC =====
+    function getDocRef() {
+      return fbDb.collection('rooms').doc(fbRoomId);
+    }
+
+    async function pullFromCloud() {
+      if (!fbDb || !fbRoomId) return;
+      try {
+        const doc = await getDocRef().get();
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.players && data.players.length > 0) {
+            S.players = data.players;
+            localStorage.setItem('bk_players_v2', JSON.stringify(S.players));
+          }
+          if (data.matchHistory) {
+            S.matchHistory = data.matchHistory;
+            localStorage.setItem('bk_history_v1', JSON.stringify(S.matchHistory));
+          }
+          loadData();
+          if (S.currentScreen === 's1') renderS1();
+        }
+      } catch (e) {
+        console.error('pullFromCloud error:', e);
+      }
+    }
+
+    async function pushToCloud() {
+      if (!fbDb || !fbRoomId) return;
+      try {
+        await getDocRef().set({
+          players: S.players,
+          matchHistory: S.matchHistory,
+          lastModified: firebase.firestore.FieldValue.serverTimestamp(),
+          modifiedBy: fbAuth?.currentUser?.uid || 'unknown'
+        });
+      } catch (e) {
+        console.error('pushToCloud error:', e);
+      }
+    }
+
+    function startRealtimeSync() {
+      if (fbUnsubscribe) fbUnsubscribe();
+      fbUnsubscribe = getDocRef().onSnapshot((doc) => {
+        if (!doc.exists) return;
+        const data = doc.data();
+        if (data.modifiedBy === fbAuth?.currentUser?.uid) return;
+        
+        if (data.players) {
+          S.players = data.players;
+          localStorage.setItem('bk_players_v2', JSON.stringify(S.players));
+        }
+        if (data.matchHistory) {
+          S.matchHistory = data.matchHistory;
+          localStorage.setItem('bk_history_v1', JSON.stringify(S.matchHistory));
+        }
+        if (S.currentScreen === 's1') renderS1();
+      }, (err) => {
+        console.error('Realtime sync error:', err);
+      });
+    }
+
+    async function forceUpload() {
+      if (!fbDb || !fbRoomId) { alert('No estás conectado a la nube'); return; }
+      try {
+        await pushToCloud();
+        alert('✅ Datos subidos exitosamente a la nube');
+      } catch (e) {
+        alert('❌ Error al subir: ' + e.message);
+      }
+    }
 
     // ===== ESTADO =====
     let S = {
@@ -1257,7 +1485,9 @@
       pendingDeleteId: null, pendingResetId: null,
       histTab: 'all', histCourtFilter: 'all',
       currentScreen: 's1', selectedChipId: null,
-      deuceEnabled: true
+      deuceEnabled: true,
+      transfers: [],
+      midEditTemp: { teamA: [], teamB: [], pendingTransfers: [] }
     };
 
     // ===== PERSISTENCIA =====
@@ -1275,6 +1505,7 @@
           S.teamA = s.teamA || [];
           S.teamB = s.teamB || [];
           S.deuceEnabled = s.deuceEnabled !== undefined ? s.deuceEnabled : true;
+          S.transfers = s.transfers || [];
           if (s.currentScreen && s.currentScreen !== 's1') setTimeout(() => goTo(s.currentScreen), 100);
           setCourt(S.courtSize);
         }
@@ -1282,8 +1513,9 @@
     }
     function saveAppState() {
       localStorage.setItem('bk_state_v1', JSON.stringify({
-        present: S.present, courtSize: S.courtSize, teamA: S.teamA, teamB: S.teamB, 
-        currentScreen: S.currentScreen, deuceEnabled: S.deuceEnabled
+        present: S.present, courtSize: S.courtSize, teamA: S.teamA, teamB: S.teamB,
+        currentScreen: S.currentScreen, deuceEnabled: S.deuceEnabled,
+        transfers: S.transfers
       }));
     }
     function seed() {
@@ -1306,8 +1538,14 @@
       ];
       savePlayers();
     }
-    function savePlayers() { localStorage.setItem('bk_players_v2', JSON.stringify(S.players)); }
-    function saveHistory() { localStorage.setItem('bk_history_v1', JSON.stringify(S.matchHistory)); }
+    function savePlayers() { 
+      localStorage.setItem('bk_players_v2', JSON.stringify(S.players)); 
+      pushToCloud();
+    }
+    function saveHistory() { 
+      localStorage.setItem('bk_history_v1', JSON.stringify(S.matchHistory)); 
+      pushToCloud();
+    }
     function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 
     // ===== HELPERS =====
@@ -1361,6 +1599,10 @@
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       window.scrollTo(0, 0);
+      // BUG FIX: stop timer when leaving s3 via back navigation
+      if (id === 's1' || id === 's2') {
+        if (S.timerRunning) { clearInterval(S.timerInterval); S.timerRunning = false; }
+      }
       if (id === 's1') renderS1();
       if (id === 's2') renderS2();
       if (id === 's3') renderS3();
@@ -1785,7 +2027,24 @@
     }
 
     // ===== MOTOR ELO =====
+    function getTransferBlend(pid, totalPoints, bdA, bdB) {
+      const playerTransfers = S.transfers.filter(t => t.playerId === pid);
+      if (!playerTransfers.length) return null;
+      let prevTotal = 0, curTeam = playerTransfers[0].fromTeam;
+      const segments = [];
+      for (const t of playerTransfers) {
+        const segTotal = t.partialA + t.partialB;
+        segments.push({ team: curTeam, points: Math.max(0, segTotal - prevTotal) });
+        prevTotal = segTotal; curTeam = t.toTeam;
+      }
+      segments.push({ team: curTeam, points: Math.max(0, totalPoints - prevTotal) });
+      const ptsByTeam = { a: 0, b: 0 };
+      segments.forEach(s => { ptsByTeam[s.team] = (ptsByTeam[s.team] || 0) + s.points; });
+      const sp = totalPoints || 1;
+      return (ptsByTeam.a / sp) * bdA + (ptsByTeam.b / sp) * bdB;
+    }
     function calculateELO() {
+
       const sA = parseInt(document.getElementById('score-a').value) || 0, sB = parseInt(document.getElementById('score-b').value) || 0;
       const err = document.getElementById('score-error');
       if (sA < 0 || sB < 0) { err.textContent = '❌ Los marcadores no pueden ser negativos'; return; }
@@ -1823,34 +2082,28 @@
       const hA = teamAvgH(S.teamA), hB = teamAvgH(S.teamB);
       S.matchResults = [];
       const rec = { id: uid(), date: new Date().toISOString(), scoreA: sA, scoreB: sB, courtSize: S.courtSize, winnerTeam: wT, pA: Math.round(pA * 100), playerDeltas: [], mvpId: null };
-
+      const totalPoints = sA + sB;
       let bestDelta = -Infinity, mvpId = null;
-      const procTeam = (team, tid, bd, won) => {
-        team.forEach(e => {
-          const p = getPlayer(e.player_id); if (!p) return;
-
-          const matches = getMatchesPlayed(p.id);
-          // Rookie Boost: Acelera el Elo los primeros 10 partidos
-          const rookieMultiplier = matches < 5 ? 2.0 : matches < 10 ? 1.5 : 1.0;
-
-          const iD = bd * rookieMultiplier;
-          const fD = e.is_late_arrival ? iD * 0.70 : iD;
-
-          if (won && fD > bestDelta) { bestDelta = fD; mvpId = p.id; }
-
-          const oE = p.elo_score, nE = Math.max(100, oE + fD);
-          const pi = S.players.findIndex(x => x.id === p.id);
-          if (pi !== -1) S.players[pi].elo_score = nE;
-
-          const hDiff = Math.round(p.height_cm - (tid === 'a' ? hB : hA));
-          const r = { playerId: p.id, name: p.name, oldElo: oE, newElo: nE, delta: fD, won, isLate: e.is_late_arrival, team: tid, heightDiff: hDiff, matchesBeforeThis: matches };
-          S.matchResults.push(r);
-          rec.playerDeltas.push({ playerId: p.id, name: p.name, oldElo: oE, newElo: nE, delta: fD, won, isLate: e.is_late_arrival, team: tid });
-        });
-      };
-
-      procTeam(S.teamA, 'a', bdA, wT === 'a');
-      procTeam(S.teamB, 'b', bdB, wT === 'b');
+      const allEntries = [...S.teamA.map(e => ({...e, tid:'a'})), ...S.teamB.map(e => ({...e, tid:'b'}))];
+      allEntries.forEach(e => {
+        const p = getPlayer(e.player_id); if (!p) return;
+        const tid = e.tid, won = wT === tid;
+        const bd = tid === 'a' ? bdA : bdB;
+        const matches = getMatchesPlayed(p.id);
+        const rookieMult = matches < 5 ? 2.0 : matches < 10 ? 1.5 : 1.0;
+        const blended = getTransferBlend(p.id, totalPoints, bdA, bdB);
+        const rawD = (blended !== null ? blended : bd) * rookieMult;
+        const fD = e.is_late_arrival ? rawD * 0.70 : rawD;
+        if (won && fD > bestDelta) { bestDelta = fD; mvpId = p.id; }
+        const oE = p.elo_score, nE = Math.max(100, oE + fD);
+        const pi = S.players.findIndex(x => x.id === p.id);
+        if (pi !== -1) S.players[pi].elo_score = nE;
+        const hDiff = Math.round(p.height_cm - (tid === 'a' ? hB : hA));
+        const isTransferred = S.transfers.some(t => t.playerId === p.id);
+        const r = { playerId: p.id, name: p.name, oldElo: oE, newElo: nE, delta: fD, won, isLate: e.is_late_arrival, isTransferred, team: tid, heightDiff: hDiff, matchesBeforeThis: matches };
+        S.matchResults.push(r);
+        rec.playerDeltas.push({ playerId: p.id, name: p.name, oldElo: oE, newElo: nE, delta: fD, won, isLate: e.is_late_arrival, isTransferred, team: tid });
+      });
       rec.mvpId = mvpId;
       S.matchResults.forEach(r => { if (r.playerId === mvpId) r.isMvp = true; });
       S.matchHistory.unshift(rec);
@@ -1858,6 +2111,7 @@
       document.getElementById('s5-result').textContent = `${wT === 'a' ? '⬜ Equipo Blanco' : '🟫 Equipo Oscuro'} gana · ${sA} – ${sB}`;
       renderS5(); goTo('s5');
     }
+
 
     // ===== S5: RESUMEN =====
     function renderS5() {
@@ -1868,8 +2122,10 @@
         const right = S.godMode
           ? `<div style="text-align:right"><div style="font-size:20px;font-weight:bold" class="${cls}">${sign}${Math.round(r.delta)}</div><div style="font-size:11px;color:var(--text2)">${Math.round(r.oldElo)} → ${Math.round(r.newElo)}</div></div>`
           : `<div style="text-align:right"><span class="rank ${nR.cls}">${nR.name}</span>${rChg ? `<div style="font-size:11px;color:${r.delta >= 0 ? 'var(--green)' : 'var(--red)'};margin-top:3px">${r.delta >= 0 ? '↑ Subió' : '↓ Bajó'} de rango</div>` : ''}</div>`;
-        return `<div class="elo-result-row"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;display:flex;align-items:center;gap:6px">${r.isMvp ? '🌟 ' : ''}${r.name}${isRookie ? ' 🔰' : ''}${r.isLate ? '<span class="chip-late">TARDE</span>' : ''}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${S.godMode ? `Alt: ${r.heightDiff > 0 ? '+' : ''}${r.heightDiff}cm${r.isLate ? ' · Tarde: ×0.70' : ''}` : `Antes: <span class="rank ${oR.cls}">${oR.name}</span>`}</div></div>${right}</div>`;
+        const transferBadge = r.isTransferred ? '<span style="font-size:10px;color:var(--blue);background:#3498DB20;padding:2px 6px;border-radius:10px">↔ TRANSFER</span>' : '';
+        return `<div class="elo-result-row"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;display:flex;align-items:center;gap:6px">${r.isMvp ? '🌟 ' : ''}${r.name}${isRookie ? ' 🔰' : ''}${r.isLate ? '<span class="chip-late">TARDE</span>' : ''}${transferBadge}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${S.godMode ? `Alt: ${r.heightDiff > 0 ? '+' : ''}${r.heightDiff}cm${r.isLate ? ' · Tarde: ×0.70' : ''}${r.isTransferred ? ' · ELO ponderado' : ''}` : `Antes: <span class="rank ${oR.cls}">${oR.name}</span>`}</div></div>${right}</div>`;
       };
+
       document.getElementById('s5-winners').innerHTML = S.matchResults.filter(r => r.won).map(renderRow).join('');
       document.getElementById('s5-losers').innerHTML = S.matchResults.filter(r => !r.won).map(renderRow).join('');
     }
@@ -1916,12 +2172,15 @@
       let matches = S.matchHistory, filterPid = null;
 
       // Highlight filter buttons
-      ['all', 'half', 'full'].forEach(f => {
+      ['all', 'half', 'full', 'dnf', 'done'].forEach(f => {
         const el = document.getElementById(`hf-${f}`);
         if (el) el.classList.toggle('active', S.histCourtFilter === f);
       });
 
-      if (S.histCourtFilter !== 'all') matches = matches.filter(m => m.courtSize === S.histCourtFilter);
+      if (S.histCourtFilter === 'dnf') matches = matches.filter(m => m.isDNF);
+      else if (S.histCourtFilter === 'done') matches = matches.filter(m => !m.isDNF);
+      else if (S.histCourtFilter === 'half') matches = matches.filter(m => m.courtSize === 'half');
+      else if (S.histCourtFilter === 'full') matches = matches.filter(m => m.courtSize === 'full');
 
       if (S.histTab === 'h2h') {
         const pidA = document.getElementById('h2h-player-a').value;
@@ -2022,24 +2281,32 @@
           const sign = d.delta >= 0 ? '+' : '', col = d.delta >= 0 ? 'var(--green)' : 'var(--red)';
           const isMvp = m.mvpId === d.playerId;
           return `<div class="match-player-line">
-        <span>${isMvp ? '🌟 ' : ''}${d.team === 'a' ? '⬜' : '🟫'} ${d.name}${d.won ? ' 🏆' : ''}${d.isLate ? ' <span class="chip-late">TARDE</span>' : ''}</span>
+        <span>${isMvp ? '🌟 ' : ''}${d.team === 'a' ? '⬜' : '🟫'} ${d.name}${d.won ? ' 🏆' : ''}${d.isLate ? ' <span class="chip-late">TARDE</span>' : ''}${d.isTransferred ? ' <span style="font-size:10px;color:var(--blue)">↔</span>' : ''}</span>
         <span style="color:${col};font-weight:bold;white-space:nowrap">${sign}${Math.round(d.delta)} <span style="color:var(--text3);font-weight:normal;font-size:11px">(${Math.round(d.oldElo)}→${Math.round(d.newElo)})</span></span>
       </div>`;
         }).join('');
-        html += `<div class="match-card">
+        const isDNF = m.isDNF;
+        const winnerBadge = isDNF
+          ? (m.winnerTeam ? `<div class="match-winner-badge" style="background:#F1C40F20;color:var(--gold)">🏁 DNF · ${m.winnerTeam === 'a' ? '⬜' : '🟫'} iba ganando</div>`
+                          : `<div class="match-winner-badge" style="background:#F1C40F20;color:var(--gold)">🏁 DNF · Empate</div>`)
+          : `<div class="match-winner-badge">${wN} 🏆</div>`;
+        const dnfInfo = isDNF ? `<div class="match-meta">Factor ELO: ${m.dnfFactor}x</div>` : '';
+        html += `<div class="match-card"${isDNF ? ' style="border-color:#F1C40F40"' : ''}>
       <div class="match-card-hdr" onclick="toggleMatchCard('mc${idx}')">
         <div>
-          <div class="match-score">${m.scoreA} — ${m.scoreB}</div>
+          <div class="match-score">${m.scoreA} — ${m.scoreB}${isDNF ? ' <span style="font-size:14px;color:var(--gold);font-weight:normal">DNF</span>' : ''}</div>
           <div class="match-meta">${dStr} · ${tStr} · ${cL}</div>
           <div class="match-meta">Prob. inicial: ⬜ ${m.pA}% vs 🟫 ${100 - m.pA}%</div>
+          ${dnfInfo}
         </div>
         <div style="text-align:right;flex-shrink:0">
-          <div class="match-winner-badge">${wN} 🏆</div>
+          ${winnerBadge}
           <div style="font-size:11px;color:var(--text3);margin-top:6px">▾ ver detalles${m.mvpId ? ' · MVP 🌟' : ''}</div>
         </div>
       </div>
       <div class="match-body" id="mc${idx}">${rows}</div>
     </div>`;
+
       });
       cont.innerHTML = html;
     }
@@ -2177,22 +2444,143 @@
       closeConfirm('confirm-reset');
       openModal('modal-roster');
     }
+
+    // ===== DNF =====
+    function openDNFModal() {
+      document.getElementById('dnf-score-a').value = 0;
+      document.getElementById('dnf-score-b').value = 0;
+      document.getElementById('dnf-error').textContent = '';
+      updateDNFFactor();
+      openModal('modal-dnf');
+    }
+    function updateDNFFactor() {
+      const a = parseInt(document.getElementById('dnf-score-a').value) || 0;
+      const b = parseInt(document.getElementById('dnf-score-b').value) || 0;
+      const total = a + b;
+      const factor = Math.min(total / 22, 1);
+      document.getElementById('dnf-factor-display').textContent = factor.toFixed(2) + 'x';
+      document.getElementById('dnf-factor-sub').textContent = `${total} pts jugados de ~22 esperados`;
+    }
+    function confirmDNF() {
+      const sA = parseInt(document.getElementById('dnf-score-a').value) || 0;
+      const sB = parseInt(document.getElementById('dnf-score-b').value) || 0;
+      const err = document.getElementById('dnf-error');
+      if (sA < 0 || sB < 0) { err.textContent = '❌ Marcadores no pueden ser negativos'; return; }
+      if (sA === 0 && sB === 0) { err.textContent = '❌ Ingresa al menos un punto'; return; }
+      if (!S.teamA.length || !S.teamB.length) { err.textContent = '❌ Equipos vacíos'; return; }
+      err.textContent = '';
+      clearInterval(S.timerInterval); S.timerRunning = false;
+      const total = sA + sB;
+      const dnfFactor = Math.min(total / 22, 1);
+      const wT = sA > sB ? 'a' : (sB > sA ? 'b' : null);
+      const matchup = getEffectiveMatchup(S.teamA, S.teamB);
+      const pA = matchup.probA, pB = 1 - pA;
+      let bdA, bdB;
+      if (wT === null) {
+        bdA = 0; bdB = 0;
+      } else {
+        const diff = Math.abs(sA - sB);
+        const MM = Math.sqrt(diff + 1) / Math.sqrt(2);
+        const K = K_BASE * MM * (S.courtSize === 'half' ? 0.80 : 1.0) * dnfFactor;
+        bdA = wT === 'a' ? K * (1 - pA) : K * (0 - pA);
+        bdB = wT === 'b' ? K * (1 - pB) : K * (0 - pB);
+      }
+      const hA = teamAvgH(S.teamA), hB = teamAvgH(S.teamB);
+      S.matchResults = [];
+      const rec = { id: uid(), date: new Date().toISOString(), scoreA: sA, scoreB: sB, courtSize: S.courtSize, winnerTeam: wT, pA: Math.round(pA * 100), playerDeltas: [], mvpId: null, isDNF: true, dnfFactor: parseFloat(dnfFactor.toFixed(2)) };
+      const procTeam = (team, tid, bd, won) => {
+        team.forEach(e => {
+          const p = getPlayer(e.player_id); if (!p) return;
+          const matches = getMatchesPlayed(p.id);
+          const rookieMult = matches < 5 ? 2.0 : matches < 10 ? 1.5 : 1.0;
+          const fD = bd * rookieMult * (e.is_late_arrival ? 0.70 : 1.0);
+          const oE = p.elo_score, nE = Math.max(100, oE + fD);
+          const pi = S.players.findIndex(x => x.id === p.id);
+          if (pi !== -1) S.players[pi].elo_score = nE;
+          const hDiff = Math.round(p.height_cm - (tid === 'a' ? hB : hA));
+          const r = { playerId: p.id, name: p.name, oldElo: oE, newElo: nE, delta: fD, won: won === true, isLate: e.is_late_arrival, team: tid, heightDiff: hDiff, matchesBeforeThis: matches };
+          S.matchResults.push(r);
+          rec.playerDeltas.push({ playerId: p.id, name: p.name, oldElo: oE, newElo: nE, delta: fD, won: won === true, isLate: e.is_late_arrival, team: tid });
+        });
+      };
+      procTeam(S.teamA, 'a', bdA, wT === 'a');
+      procTeam(S.teamB, 'b', bdB, wT === 'b');
+      S.matchHistory.unshift(rec);
+      savePlayers(); saveHistory();
+      closeModal('modal-dnf');
+      if (wT) document.getElementById('s5-result').textContent = `${wT === 'a' ? '⬜ Blanco' : '🟫 Oscuro'} iba ganando · ${sA}–${sB} (DNF)`;
+      else document.getElementById('s5-result').textContent = `Empate parcial · ${sA}–${sB} (DNF)`;
+      renderS5(); goTo('s5');
+    }
+
     function cancelMatch() {
       clearInterval(S.timerInterval); S.timerRunning = false;
-      S.teamA = []; S.teamB = []; // limpiar antes → newGame no conserva nadie
+      // BUG FIX: don't clear teams here — newGame reads them to restore selections
       closeConfirm('confirm-cancel');
       newGame();
     }
 
+    // ===== MID-MATCH EDIT =====
+    function openMidEdit() {
+      S.midEditTemp = { teamA: S.teamA.map(e => ({...e})), teamB: S.teamB.map(e => ({...e})), pendingTransfers: [] };
+      document.getElementById('mid-score-a').value = 0;
+      document.getElementById('mid-score-b').value = 0;
+      document.getElementById('mid-edit-error').textContent = '';
+      document.getElementById('mid-transfers-log').textContent = '';
+      renderMidTeams();
+      openModal('modal-mid-edit');
+    }
+    function renderMidTeams() {
+      ['a','b'].forEach(t => {
+        const arr = t === 'a' ? S.midEditTemp.teamA : S.midEditTemp.teamB;
+        document.getElementById(`mid-team-${t}`).innerHTML = arr.map(e => {
+          const p = getPlayer(e.player_id); if (!p) return '';
+          return `<div class="team-player-chip" onclick="midTapPlayer('${p.id}')" style="cursor:pointer">
+            <div style="flex:1"><div class="chip-name">${p.name}</div><div class="chip-elo">${p.height_cm}cm · ${Math.round(p.elo_score)}</div></div>
+            ${e.is_late_arrival ? '<span class="chip-late">TARDE</span>' : ''}
+            <span style="font-size:11px;color:var(--text3);padding-left:4px">\u21c4</span></div>`;
+        }).join('');
+      });
+    }
+    function midTapPlayer(pid) {
+      const pA = parseInt(document.getElementById('mid-score-a').value) || 0;
+      const pB = parseInt(document.getElementById('mid-score-b').value) || 0;
+      const inA = S.midEditTemp.teamA.findIndex(e => e.player_id === pid);
+      if (inA !== -1) {
+        const [e] = S.midEditTemp.teamA.splice(inA, 1);
+        S.midEditTemp.teamB.push(e);
+        S.midEditTemp.pendingTransfers.push({ playerId: pid, fromTeam: 'a', toTeam: 'b', partialA: pA, partialB: pB });
+      } else {
+        const inB = S.midEditTemp.teamB.findIndex(e => e.player_id === pid);
+        if (inB === -1) return;
+        const [e] = S.midEditTemp.teamB.splice(inB, 1);
+        S.midEditTemp.teamA.push(e);
+        S.midEditTemp.pendingTransfers.push({ playerId: pid, fromTeam: 'b', toTeam: 'a', partialA: pA, partialB: pB });
+      }
+      const count = S.midEditTemp.pendingTransfers.length;
+      const pA2 = S.midEditTemp.pendingTransfers[count-1].partialA, pB2 = S.midEditTemp.pendingTransfers[count-1].partialB;
+      document.getElementById('mid-transfers-log').textContent = `${count} cambio(s) a las ${pA2}-${pB2}`;
+      renderMidTeams();
+    }
+    function applyMidEdit() {
+      const err = document.getElementById('mid-edit-error');
+      S.teamA = S.midEditTemp.teamA;
+      S.teamB = S.midEditTemp.teamB;
+      S.transfers.push(...S.midEditTemp.pendingTransfers);
+      saveAppState();
+      closeModal('modal-mid-edit');
+      renderS3();
+    }
+
     // ===== NUEVO PARTIDO =====
     function newGame() {
-      // Conservar pre-seleccionados los jugadores que acaban de jugar
+
       const justPlayed = [...S.teamA, ...S.teamB]
         .map(e => e.player_id)
         .filter(id => S.players.find(p => p.id === id && p.is_active));
       S.present = justPlayed.length > 0 ? justPlayed : [];
-
       S.teamA = []; S.teamB = []; S.matchResults = [];
+      S.transfers = [];
       S.timerSeconds = 0; S.timerRunning = false; clearInterval(S.timerInterval);
       S.selectedLatePlayer = null; S.godMode = false; S.selectedChipId = null;
       saveAppState();
@@ -2231,8 +2619,24 @@
     function closeConfirm(id) { document.getElementById(id).classList.remove('open'); }
 
     // ===== ARRANQUE =====
-    loadData();
-    renderS1();
+    (async function boot() {
+      const savedCode = localStorage.getItem('bk_family_code');
+      if (savedCode) {
+        try {
+          await initFirebase(savedCode);
+          await pullFromCloud();
+          document.getElementById('s0').classList.remove('active');
+          loadData(); // cargar estado local
+          renderS1();
+          goTo('s1');
+        } catch (e) {
+          console.error('Auto-login failed:', e);
+          document.getElementById('s0').classList.add('active');
+        }
+      } else {
+        document.getElementById('s0').classList.add('active');
+      }
+    })();
   </script>
 </body>
 
