@@ -901,15 +901,16 @@
 
   <!-- S0: CÓDIGO FAMILIAR -->
   <div class="screen active" id="s0">
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;max-width:430px;margin:0 auto">
+    <div
+      style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;max-width:430px;margin:0 auto">
       <div style="font-size:48px;margin-bottom:20px">🏀</div>
       <div style="font-size:24px;font-weight:bold;margin-bottom:8px">Basket Familiar</div>
       <div style="font-size:14px;color:var(--text2);margin-bottom:32px;text-align:center">
         Ingresa el código de tu familia para sincronizar datos entre dispositivos
       </div>
       <input class="form-input" id="family-code-input" type="text" placeholder="Ej: basket2024"
-        style="text-align:center;font-size:18px;max-width:280px;margin-bottom:16px"
-        autocomplete="off" autocorrect="off" spellcheck="false">
+        style="text-align:center;font-size:18px;max-width:280px;margin-bottom:16px" autocomplete="off" autocorrect="off"
+        spellcheck="false">
       <button class="btn btn-primary" style="max-width:280px" onclick="submitFamilyCode()">
         🔑 Entrar
       </button>
@@ -968,7 +969,9 @@
       <div class="step"></div>
       <div class="step"></div>
     </div>
-    <div id="bias-alert" style="display:none;margin:8px 16px 0;background:#F1C40F18;border:1px solid var(--gold);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--gold);line-height:1.5"></div>
+    <div id="bias-alert"
+      style="display:none;margin:8px 16px 0;background:#F1C40F18;border:1px solid var(--gold);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--gold);line-height:1.5">
+    </div>
     <div style="padding:14px 20px 0">
       <div class="prob-labels"><span id="prob-label-a">⬜ Blanco — 50%</span><span id="prob-label-b">50% — 🟫
           Oscuro</span></div>
@@ -1022,13 +1025,19 @@
       </div>
     </div>
     <div style="display:flex;gap:8px;padding:8px 16px">
-      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" onclick="openLateModal()">+ Tarde</button>
-      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" onclick="openMidEdit()">✏️ Equipos</button>
-      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" id="timer-btn" onclick="toggleTimer()">▶ Timer</button>
-      <button class="btn btn-secondary btn-sm" style="padding:12px 14px" onclick="openConfirm('confirm-cancel')" title="Cancelar">✕</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" onclick="openLateModal()">+
+        Tarde</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" onclick="openMidEdit()">✏️
+        Equipos</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1;padding:12px;font-size:13px" id="timer-btn"
+        onclick="toggleTimer()">▶ Timer</button>
+      <button class="btn btn-secondary btn-sm" style="padding:12px 14px" onclick="openConfirm('confirm-cancel')"
+        title="Cancelar">✕</button>
     </div>
     <div style="padding:4px 16px 0">
-      <button class="btn btn-sm" style="width:100%;padding:12px;background:var(--orange-dim);border:1px solid var(--orange);color:var(--orange);border-radius:var(--radius-sm);font-size:13px;font-family:'Georgia',serif;cursor:pointer" onclick="openDNFModal()">🏁 DNF — Partido sin completar</button>
+      <button class="btn btn-sm"
+        style="width:100%;padding:12px;background:var(--orange-dim);border:1px solid var(--orange);color:var(--orange);border-radius:var(--radius-sm);font-size:13px;font-family:'Georgia',serif;cursor:pointer"
+        onclick="openDNFModal()">🏁 DNF — Partido sin completar</button>
     </div>
     <div style="height:100px"></div>
     <div class="fab"><button class="btn btn-danger" onclick="endMatch()">🏁 Finalizar Partido</button></div>
@@ -1070,16 +1079,21 @@
     <div style="padding:8px 20px;font-size:13px;color:var(--red);text-align:center;min-height:24px" id="score-error">
     </div>
     <div style="padding:12px 20px">
-    <div style="padding:0 20px 4px;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:14px;color:var(--text2)">⚡ Jugar con deuce (10-10)</span>
-      <label style="position:relative;width:44px;height:24px;cursor:pointer">
-        <input type="checkbox" id="deuce-toggle" checked style="opacity:0;width:0;height:0" onchange="toggleDeuce()">
-        <span id="deuce-slider" style="position:absolute;inset:0;background:var(--orange);border-radius:12px;display:flex;align-items:center;padding:2px 4px;transition:.2s"><span id="deuce-thumb" style="width:20px;height:20px;background:#fff;border-radius:50%;margin-left:auto;display:block;transition:.2s"></span></span>
-      </label>
-    </div>
-    <div class="card-sm" id="deuce-rule-card" style="margin-top:4px;text-align:center;color:var(--text2);line-height:1.6;font-size:12px">
-      <b style="color:var(--text)">Regla:</b> Ganador a 11. Desde 10-10 se juega deuce: ganar con +2 (12-10, 13-11...).
-    </div>
+      <div style="padding:0 20px 4px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:14px;color:var(--text2)">⚡ Jugar con deuce (10-10)</span>
+        <label style="position:relative;width:44px;height:24px;cursor:pointer">
+          <input type="checkbox" id="deuce-toggle" checked style="opacity:0;width:0;height:0" onchange="toggleDeuce()">
+          <span id="deuce-slider"
+            style="position:absolute;inset:0;background:var(--orange);border-radius:12px;display:flex;align-items:center;padding:2px 4px;transition:.2s"><span
+              id="deuce-thumb"
+              style="width:20px;height:20px;background:#fff;border-radius:50%;margin-left:auto;display:block;transition:.2s"></span></span>
+        </label>
+      </div>
+      <div class="card-sm" id="deuce-rule-card"
+        style="margin-top:4px;text-align:center;color:var(--text2);line-height:1.6;font-size:12px">
+        <b style="color:var(--text)">Regla:</b> Ganador a 11. Desde 10-10 se juega deuce: ganar con +2 (12-10,
+        13-11...).
+      </div>
     </div>
     <div style="padding:0 20px"><button class="btn btn-primary" onclick="calculateELO()">🧮 Calcular ELO y
         Guardar</button></div>
@@ -1127,7 +1141,8 @@
         </select>
       </div>
       <div id="hist-h2h-filter" style="display:none;margin-bottom:14px">
-        <select class="form-input" id="h2h-player-a" onchange="renderHistorial()" style="padding:12px 16px;margin-bottom:8px">
+        <select class="form-input" id="h2h-player-a" onchange="renderHistorial()"
+          style="padding:12px 16px;margin-bottom:8px">
           <option value="">— Jugador A —</option>
         </select>
         <select class="form-input" id="h2h-player-b" onchange="renderHistorial()" style="padding:12px 16px">
@@ -1157,8 +1172,10 @@
       </div>
       <div style="display:flex;gap:8px;margin-bottom:20px">
         <button class="btn btn-primary" onclick="openAddPlayer()">+ Añadir Jugador</button>
-        <button class="btn btn-secondary" style="width:auto;padding:18px 16px;white-space:nowrap" onclick="exportBackup()" title="Descargar copia de seguridad">📤 Backup</button>
-        <button class="btn btn-secondary" style="width:auto;padding:18px 16px;white-space:nowrap" onclick="forceUpload()" title="Subir datos a la nube">☁️ Subir</button>
+        <button class="btn btn-secondary" style="width:auto;padding:18px 16px;white-space:nowrap"
+          onclick="exportBackup()" title="Descargar copia de seguridad">📤 Backup</button>
+        <button class="btn btn-secondary" style="width:auto;padding:18px 16px;white-space:nowrap"
+          onclick="forceUpload()" title="Subir datos a la nube">☁️ Subir</button>
       </div>
       <div id="roster-list"></div>
     </div>
@@ -1275,23 +1292,32 @@
         <div class="modal-title" style="margin:0">🏁 Partido sin Completar</div>
         <button class="back-btn" onclick="closeModal('modal-dnf')">✕</button>
       </div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">El parcial se guardará en el historial. El ELO se ajusta <b style="color:var(--text)">proporcionalmente al avance</b> del partido (puntos totales vs 22).</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">El parcial se guardará en el
+        historial. El ELO se ajusta <b style="color:var(--text)">proporcionalmente al avance</b> del partido (puntos
+        totales vs 22).</div>
       <div style="display:flex;gap:16px;padding:0 0 12px;align-items:flex-start">
         <div style="flex:1;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">⬜ Blanco</div>
-          <input class="score-input" type="number" id="dnf-score-a" min="0" max="10" value="0" oninput="updateDNFFactor()" inputmode="numeric" style="font-size:52px;padding:12px 0">
+          <div
+            style="font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+            ⬜ Blanco</div>
+          <input class="score-input" type="number" id="dnf-score-a" min="0" max="10" value="0"
+            oninput="updateDNFFactor()" inputmode="numeric" style="font-size:52px;padding:12px 0">
         </div>
         <div style="padding-top:52px;font-size:28px;color:var(--text3);font-weight:bold">—</div>
         <div style="flex:1;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">🟫 Oscuro</div>
-          <input class="score-input" type="number" id="dnf-score-b" min="0" max="10" value="0" oninput="updateDNFFactor()" inputmode="numeric" style="font-size:52px;padding:12px 0">
+          <div
+            style="font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+            🟫 Oscuro</div>
+          <input class="score-input" type="number" id="dnf-score-b" min="0" max="10" value="0"
+            oninput="updateDNFFactor()" inputmode="numeric" style="font-size:52px;padding:12px 0">
         </div>
       </div>
       <div class="card-sm" style="margin-bottom:12px;font-size:13px;text-align:center;line-height:1.8">
         Factor ELO: <b style="color:var(--orange)" id="dnf-factor-display">—</b>
         <div style="font-size:11px;color:var(--text3)" id="dnf-factor-sub"></div>
       </div>
-      <div style="font-size:13px;color:var(--red);text-align:center;min-height:20px;margin-bottom:10px" id="dnf-error"></div>
+      <div style="font-size:13px;color:var(--red);text-align:center;min-height:20px;margin-bottom:10px" id="dnf-error">
+      </div>
       <button class="btn btn-warning" onclick="confirmDNF()" style="margin-bottom:8px">💾 Guardar como DNF</button>
       <button class="btn btn-secondary" onclick="closeModal('modal-dnf')">Cancelar</button>
     </div>
@@ -1304,26 +1330,39 @@
         <div class="modal-title" style="margin:0">✏️ Editar Equipos</div>
         <button class="back-btn" onclick="closeModal('modal-mid-edit')">✕</button>
       </div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">¿Cuánto va el marcador <b style="color:var(--text)">ahora mismo</b>? El ELO de los jugadores trasladados se ponderará según su tiempo en cada equipo.</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">¿Cuánto va el marcador <b
+          style="color:var(--text)">ahora mismo</b>? El ELO de los jugadores trasladados se ponderará según su tiempo en
+        cada equipo.</div>
       <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px">
         <div style="flex:1;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">⬜ Blanco</div>
-          <input class="score-input" type="number" id="mid-score-a" min="0" max="11" value="0" inputmode="numeric" style="font-size:48px;padding:10px 0">
+          <div
+            style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+            ⬜ Blanco</div>
+          <input class="score-input" type="number" id="mid-score-a" min="0" max="11" value="0" inputmode="numeric"
+            style="font-size:48px;padding:10px 0">
         </div>
         <div style="font-size:24px;color:var(--text3);font-weight:bold;padding-top:22px">—</div>
         <div style="flex:1;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">🟫 Oscuro</div>
-          <input class="score-input" type="number" id="mid-score-b" min="0" max="11" value="0" inputmode="numeric" style="font-size:48px;padding:10px 0">
+          <div
+            style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+            🟫 Oscuro</div>
+          <input class="score-input" type="number" id="mid-score-b" min="0" max="11" value="0" inputmode="numeric"
+            style="font-size:48px;padding:10px 0">
         </div>
       </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Toca un jugador para moverlo al equipo contrario:</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Toca un jugador para moverlo al equipo contrario:
+      </div>
       <div style="display:flex;gap:10px;margin-bottom:16px">
         <div style="flex:1">
-          <div style="font-size:11px;font-weight:bold;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">⬜ Blanco</div>
+          <div
+            style="font-size:11px;font-weight:bold;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">
+            ⬜ Blanco</div>
           <div id="mid-team-a"></div>
         </div>
         <div style="flex:1">
-          <div style="font-size:11px;font-weight:bold;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">🟫 Oscuro</div>
+          <div
+            style="font-size:11px;font-weight:bold;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">
+            🟫 Oscuro</div>
           <div id="mid-team-b"></div>
         </div>
       </div>
@@ -1346,12 +1385,12 @@
 
     // ===== FIREBASE CONFIG =====
     const FIREBASE_CONFIG = {
-      apiKey: "PEGAR_AQUI",
-      authDomain: "PEGAR_AQUI",
-      projectId: "PEGAR_AQUI",
-      storageBucket: "PEGAR_AQUI",
-      messagingSenderId: "PEGAR_AQUI",
-      appId: "PEGAR_AQUI"
+      apiKey: "AIzaSyCgj1Yl8voWdXMeizM4sHJ8N2zgrFFLDmU",
+      authDomain: "basket-familiar.firebaseapp.com",
+      projectId: "basket-familiar",
+      storageBucket: "basket-familiar.firebasestorage.app",
+      messagingSenderId: "797049313770",
+      appId: "1:797049313770:web:297d233ddb70724e997a93"
     };
 
     let fbApp = null, fbDb = null, fbAuth = null, fbRoomId = null, fbUnsubscribe = null;
@@ -1449,7 +1488,7 @@
         if (!doc.exists) return;
         const data = doc.data();
         if (data.modifiedBy === fbAuth?.currentUser?.uid) return;
-        
+
         if (data.players) {
           S.players = data.players;
           localStorage.setItem('bk_players_v2', JSON.stringify(S.players));
@@ -1520,30 +1559,30 @@
     }
     function seed() {
       S.players = [
-        { id: uid(), name: 'Rober',       height_cm: 167, elo_score: 1200, stamina_score: 8.83, archetypes: [], is_active: true },
-        { id: uid(), name: 'Luchito',     height_cm: 174, elo_score: 1200, stamina_score: 8.35, archetypes: [], is_active: true },
-        { id: uid(), name: 'Santi',       height_cm: 183, elo_score: 1200, stamina_score: 8.22, archetypes: [], is_active: true },
-        { id: uid(), name: 'Fabián',      height_cm: 184, elo_score: 1200, stamina_score: 7.78, archetypes: [], is_active: true },
-        { id: uid(), name: 'Sebitas',     height_cm: 187, elo_score: 1200, stamina_score: 6.78, archetypes: [], is_active: true },
-        { id: uid(), name: 'Nellvis',     height_cm: 180, elo_score: 1200, stamina_score: 6.56, archetypes: [], is_active: true },
-        { id: uid(), name: 'Omaira',      height_cm: 170, elo_score: 1200, stamina_score: 6.33, archetypes: [], is_active: true },
-        { id: uid(), name: 'Andrea',      height_cm: 173, elo_score: 1200, stamina_score: 6.33, archetypes: [], is_active: true },
-        { id: uid(), name: 'Tian',        height_cm: 173, elo_score: 1200, stamina_score: 6.11, archetypes: [], is_active: true },
+        { id: uid(), name: 'Rober', height_cm: 167, elo_score: 1200, stamina_score: 8.83, archetypes: [], is_active: true },
+        { id: uid(), name: 'Luchito', height_cm: 174, elo_score: 1200, stamina_score: 8.35, archetypes: [], is_active: true },
+        { id: uid(), name: 'Santi', height_cm: 183, elo_score: 1200, stamina_score: 8.22, archetypes: [], is_active: true },
+        { id: uid(), name: 'Fabián', height_cm: 184, elo_score: 1200, stamina_score: 7.78, archetypes: [], is_active: true },
+        { id: uid(), name: 'Sebitas', height_cm: 187, elo_score: 1200, stamina_score: 6.78, archetypes: [], is_active: true },
+        { id: uid(), name: 'Nellvis', height_cm: 180, elo_score: 1200, stamina_score: 6.56, archetypes: [], is_active: true },
+        { id: uid(), name: 'Omaira', height_cm: 170, elo_score: 1200, stamina_score: 6.33, archetypes: [], is_active: true },
+        { id: uid(), name: 'Andrea', height_cm: 173, elo_score: 1200, stamina_score: 6.33, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tian', height_cm: 173, elo_score: 1200, stamina_score: 6.11, archetypes: [], is_active: true },
         { id: uid(), name: 'Tío Horacio', height_cm: 175, elo_score: 1200, stamina_score: 5.65, archetypes: [], is_active: true },
         { id: uid(), name: 'Tía Zuleima', height_cm: 165, elo_score: 1200, stamina_score: 5.55, archetypes: [], is_active: true },
-        { id: uid(), name: 'Tío Lucho',   height_cm: 174, elo_score: 1200, stamina_score: 4.95, archetypes: [], is_active: true },
-        { id: uid(), name: 'Vale',        height_cm: 172, elo_score: 1200, stamina_score: 4.72, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tío Lucho', height_cm: 174, elo_score: 1200, stamina_score: 4.95, archetypes: [], is_active: true },
+        { id: uid(), name: 'Vale', height_cm: 172, elo_score: 1200, stamina_score: 4.72, archetypes: [], is_active: true },
         { id: uid(), name: 'Tía Aracely', height_cm: 169, elo_score: 1200, stamina_score: 4.60, archetypes: [], is_active: true },
-        { id: uid(), name: 'Tío Viter',   height_cm: 190, elo_score: 1200, stamina_score: 4.20, archetypes: [], is_active: true },
+        { id: uid(), name: 'Tío Viter', height_cm: 190, elo_score: 1200, stamina_score: 4.20, archetypes: [], is_active: true },
       ];
       savePlayers();
     }
-    function savePlayers() { 
-      localStorage.setItem('bk_players_v2', JSON.stringify(S.players)); 
+    function savePlayers() {
+      localStorage.setItem('bk_players_v2', JSON.stringify(S.players));
       pushToCloud();
     }
-    function saveHistory() { 
-      localStorage.setItem('bk_history_v1', JSON.stringify(S.matchHistory)); 
+    function saveHistory() {
+      localStorage.setItem('bk_history_v1', JSON.stringify(S.matchHistory));
       pushToCloud();
     }
     function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
@@ -1853,10 +1892,10 @@
                 <button onclick="toggleLatePenalty('${p.id}')" style="font-size:10px;padding:2px 7px;border-radius:8px;border:1px solid var(--green);background:transparent;color:var(--green);cursor:pointer;font-family:'Georgia',serif">✓ Llegó a tiempo</button>
                </div>`
             : (e._wasLate
-                ? `<div style="margin-top:4px"><span style="font-size:10px;color:var(--green);background:#2ECC7120;padding:2px 7px;border-radius:8px">Sin penalización
+              ? `<div style="margin-top:4px"><span style="font-size:10px;color:var(--green);background:#2ECC7120;padding:2px 7px;border-radius:8px">Sin penalización
                     <button onclick="toggleLatePenalty('${p.id}')" style="margin-left:4px;font-size:10px;border:none;background:transparent;color:var(--text3);cursor:pointer">↩</button>
                    </span></div>`
-                : '');
+              : '');
           return `<div class="s3-player-item" style="flex-direction:column;align-items:flex-start">
             <div style="display:flex;align-items:center;width:100%">
               <div style="flex:1;font-size:14px;font-weight:600">${p.name}</div>
@@ -2084,7 +2123,7 @@
       const rec = { id: uid(), date: new Date().toISOString(), scoreA: sA, scoreB: sB, courtSize: S.courtSize, winnerTeam: wT, pA: Math.round(pA * 100), playerDeltas: [], mvpId: null };
       const totalPoints = sA + sB;
       let bestDelta = -Infinity, mvpId = null;
-      const allEntries = [...S.teamA.map(e => ({...e, tid:'a'})), ...S.teamB.map(e => ({...e, tid:'b'}))];
+      const allEntries = [...S.teamA.map(e => ({ ...e, tid: 'a' })), ...S.teamB.map(e => ({ ...e, tid: 'b' }))];
       allEntries.forEach(e => {
         const p = getPlayer(e.player_id); if (!p) return;
         const tid = e.tid, won = wT === tid;
@@ -2152,7 +2191,7 @@
     }
     function switchHistTab(tab) {
       S.histTab = tab;
-      ['all','player','h2h'].forEach(t => {
+      ['all', 'player', 'h2h'].forEach(t => {
         document.getElementById(`htab-${t}`)?.classList.toggle('active', tab === t);
       });
       document.getElementById('hist-player-filter').style.display = tab === 'player' ? 'block' : 'none';
@@ -2212,31 +2251,31 @@
             <div style="font-size:22px;font-weight:bold;margin-bottom:6px">${pNameA} <span style="color:var(--text3)">vs</span> ${pNameB}</div>
             <div style="font-size:13px;color:var(--text2);margin-bottom:12px">${versus} enfrentamientos · ${together} partidos en el mismo equipo</div>
             ${versus > 0 ? `
-            <div class="prob-bar"><div class="prob-a" style="width:${pctA}%"></div><div class="prob-b" style="width:${100-pctA}%"></div></div>
+            <div class="prob-bar"><div class="prob-a" style="width:${pctA}%"></div><div class="prob-b" style="width:${100 - pctA}%"></div></div>
             <div class="prob-labels" style="margin-top:4px">
               <span style="color:var(--orange)">🏆 ${pNameA} ${winsA}V (${pctA}%)</span>
-              <span style="color:var(--blue)">${pNameB} ${winsB}V (${100-pctA}%) 🏆</span>
+              <span style="color:var(--blue)">${pNameB} ${winsB}V (${100 - pctA}%) 🏆</span>
             </div>` : '<div style="color:var(--text2);font-size:13px">Aún no han jugado uno contra el otro.</div>'}
           </div>
           ${sharedMatches.map((m, idx) => {
-            const dA = m.playerDeltas.find(d => d.playerId === pidA);
-            const dB = m.playerDeltas.find(d => d.playerId === pidB);
-            const sameTeam = dA.team === dB.team;
-            const d = new Date(m.date);
-            const dStr = d.toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' });
-            const winner = sameTeam ? (dA.won ? '🏆 Ganaron juntos' : '💔 Perdieron juntos') : (dA.won ? `🏆 Ganó ${pNameA}` : `🏆 Ganó ${pNameB}`);
-            const sA = Math.round(dA.delta), sB = Math.round(dB.delta);
-            return `<div class="card-sm" style="margin-bottom:8px;font-size:13px">
+          const dA = m.playerDeltas.find(d => d.playerId === pidA);
+          const dB = m.playerDeltas.find(d => d.playerId === pidB);
+          const sameTeam = dA.team === dB.team;
+          const d = new Date(m.date);
+          const dStr = d.toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' });
+          const winner = sameTeam ? (dA.won ? '🏆 Ganaron juntos' : '💔 Perdieron juntos') : (dA.won ? `🏆 Ganó ${pNameA}` : `🏆 Ganó ${pNameB}`);
+          const sA = Math.round(dA.delta), sB = Math.round(dB.delta);
+          return `<div class="card-sm" style="margin-bottom:8px;font-size:13px">
               <div style="display:flex;justify-content:space-between;margin-bottom:4px">
                 <span style="color:var(--text2)">${dStr} · ${m.scoreA}–${m.scoreB}</span>
                 <span>${winner}</span>
               </div>
               <div style="display:flex;justify-content:space-between;color:var(--text2)">
-                <span>${pNameA}: <b style="color:${sA>=0?'var(--green)':'var(--red)'}">${sA>=0?'+':''}${sA}</b></span>
-                <span>${pNameB}: <b style="color:${sB>=0?'var(--green)':'var(--red)'}">${sB>=0?'+':''}${sB}</b></span>
+                <span>${pNameA}: <b style="color:${sA >= 0 ? 'var(--green)' : 'var(--red)'}">${sA >= 0 ? '+' : ''}${sA}</b></span>
+                <span>${pNameB}: <b style="color:${sB >= 0 ? 'var(--green)' : 'var(--red)'}">${sB >= 0 ? '+' : ''}${sB}</b></span>
               </div>
             </div>`;
-          }).join('')}`;
+        }).join('')}`;
         return;
       }
 
@@ -2288,7 +2327,7 @@
         const isDNF = m.isDNF;
         const winnerBadge = isDNF
           ? (m.winnerTeam ? `<div class="match-winner-badge" style="background:#F1C40F20;color:var(--gold)">🏁 DNF · ${m.winnerTeam === 'a' ? '⬜' : '🟫'} iba ganando</div>`
-                          : `<div class="match-winner-badge" style="background:#F1C40F20;color:var(--gold)">🏁 DNF · Empate</div>`)
+            : `<div class="match-winner-badge" style="background:#F1C40F20;color:var(--gold)">🏁 DNF · Empate</div>`)
           : `<div class="match-winner-badge">${wN} 🏆</div>`;
         const dnfInfo = isDNF ? `<div class="match-meta">Factor ELO: ${m.dnfFactor}x</div>` : '';
         html += `<div class="match-card"${isDNF ? ' style="border-color:#F1C40F40"' : ''}>
@@ -2522,7 +2561,7 @@
 
     // ===== MID-MATCH EDIT =====
     function openMidEdit() {
-      S.midEditTemp = { teamA: S.teamA.map(e => ({...e})), teamB: S.teamB.map(e => ({...e})), pendingTransfers: [] };
+      S.midEditTemp = { teamA: S.teamA.map(e => ({ ...e })), teamB: S.teamB.map(e => ({ ...e })), pendingTransfers: [] };
       document.getElementById('mid-score-a').value = 0;
       document.getElementById('mid-score-b').value = 0;
       document.getElementById('mid-edit-error').textContent = '';
@@ -2531,7 +2570,7 @@
       openModal('modal-mid-edit');
     }
     function renderMidTeams() {
-      ['a','b'].forEach(t => {
+      ['a', 'b'].forEach(t => {
         const arr = t === 'a' ? S.midEditTemp.teamA : S.midEditTemp.teamB;
         document.getElementById(`mid-team-${t}`).innerHTML = arr.map(e => {
           const p = getPlayer(e.player_id); if (!p) return '';
@@ -2558,7 +2597,7 @@
         S.midEditTemp.pendingTransfers.push({ playerId: pid, fromTeam: 'b', toTeam: 'a', partialA: pA, partialB: pB });
       }
       const count = S.midEditTemp.pendingTransfers.length;
-      const pA2 = S.midEditTemp.pendingTransfers[count-1].partialA, pB2 = S.midEditTemp.pendingTransfers[count-1].partialB;
+      const pA2 = S.midEditTemp.pendingTransfers[count - 1].partialA, pB2 = S.midEditTemp.pendingTransfers[count - 1].partialB;
       document.getElementById('mid-transfers-log').textContent = `${count} cambio(s) a las ${pA2}-${pB2}`;
       renderMidTeams();
     }
