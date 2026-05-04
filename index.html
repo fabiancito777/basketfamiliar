@@ -1425,6 +1425,7 @@
         await initFirebase(code);
         await pullFromCloud();
         document.getElementById('s0').classList.remove('active');
+        loadData();
         goTo('s1');
       } catch (e) {
         document.getElementById('s0-status').innerHTML = `<span style="color:var(--red)">❌ Error: ${e.message}</span>`;
